@@ -3,5 +3,5 @@ GUI application which allows and helps to build your own PC, choose specific com
 
 Denys Oliinyk coursework, TPC TNTU, 2021
 Original theme name:
-    ukr: Розробка програмного забезпечення із створенням каталогу комплектуючих ПК з можливістю сортування, пошуку, вибірки.
+    ukr: Р РѕР·СЂРѕР±РєР° РїСЂРѕРіСЂР°РјРЅРѕРіРѕ Р·Р°Р±РµР·РїРµС‡РµРЅРЅСЏ С–Р· СЃС‚РІРѕСЂРµРЅРЅСЏРј РєР°С‚Р°Р»РѕРіСѓ РєРѕРјРїР»РµРєС‚СѓСЋС‡РёС… РџРљ Р· РјРѕР¶Р»РёРІС–СЃС‚СЋ СЃРѕСЂС‚СѓРІР°РЅРЅСЏ, РїРѕС€СѓРєСѓ, РІРёР±С–СЂРєРё.
     eng: Development of the software on creation of the catalog of accessories of the personal computer with a possibility of sorting, search, selection.
