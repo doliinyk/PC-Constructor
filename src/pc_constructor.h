@@ -5,7 +5,9 @@
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class PC_Constructor; }
+namespace Ui {
+class PC_Constructor;
+}
 QT_END_NAMESPACE
 
 class PC_Constructor : public QMainWindow
@@ -18,6 +20,6 @@ public:
 
 private:
     Ui::PC_Constructor *ui;
-    QLabel *lbl;
 };
+
 #endif // PC_CONSTRUCTOR_H

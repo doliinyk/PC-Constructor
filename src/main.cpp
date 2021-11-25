@@ -1,11 +1,10 @@
-#include "pc_constructor.h"
-
 #include <QApplication>
+#include "pc_constructor.h"
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
-    PC_Constructor w;
-    w.show();
-    return a.exec();
+    QApplication application(argc, argv);
+    PC_Constructor mainWindow;
+    mainWindow.show();
+    return application.exec();
 }

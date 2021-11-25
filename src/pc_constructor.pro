@@ -9,14 +9,20 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    components.cpp \
     main.cpp \
-    pc_constructor.cpp
+    pc_constructor.cpp \
+    specifications.cpp
 
 HEADERS += \
-    pc_constructor.h
+    components.h \
+    pc_constructor.h \
+    specifications.h
 
 FORMS += \
-    pc_constructor.ui
+    components.ui \
+    pc_constructor.ui \
+    specifications.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
