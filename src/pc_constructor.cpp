@@ -12,3 +12,8 @@ PC_Constructor::~PC_Constructor()
 {
     delete ui;
 }
+
+void PC_Constructor::on_action_triggered()
+{
+    dbmanager.show();
+}

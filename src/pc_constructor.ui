@@ -6,12 +6,16 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1217</width>
-    <height>680</height>
+    <width>1221</width>
+    <height>632</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>PC_Constructor</string>
+   <string>PC Constructor</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../res/mainico.png</normaloff>../res/mainico.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_10" stretch="0">
@@ -36,7 +40,7 @@
        <widget class="QTreeWidget" name="treeWidget">
         <column>
          <property name="text">
-          <string>Колекція </string>
+          <string>Мої ПК</string>
          </property>
         </column>
         <item>
@@ -68,6 +72,11 @@
          <property name="text">
           <string>ПК2</string>
          </property>
+         <item>
+          <property name="text">
+           <string>Компоненти</string>
+          </property>
+         </item>
         </item>
        </widget>
       </item>
@@ -129,17 +138,7 @@
                 <number>0</number>
                </property>
                <item>
-                <layout class="QVBoxLayout" name="verticalLayout_7" stretch="0,1">
-                 <item>
-                  <widget class="QLabel" name="label_2">
-                   <property name="text">
-                    <string>Компоненти</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                  </widget>
-                 </item>
+                <layout class="QVBoxLayout" name="verticalLayout_7" stretch="1">
                  <item>
                   <widget class="Components" name="widget" native="true"/>
                  </item>
@@ -173,17 +172,7 @@
                 <number>0</number>
                </property>
                <item>
-                <layout class="QVBoxLayout" name="verticalLayout_9" stretch="0,1">
-                 <item>
-                  <widget class="QLabel" name="label_3">
-                   <property name="text">
-                    <string>Характеристики</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                  </widget>
-                 </item>
+                <layout class="QVBoxLayout" name="verticalLayout_9" stretch="0">
                  <item>
                   <widget class="Specifications" name="widget_2" native="true"/>
                  </item>
@@ -225,11 +214,21 @@
          <attribute name="title">
           <string>ПК1 &gt; Компоненти</string>
          </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout" stretch="1">
+          <item>
+           <widget class="Components" name="widget_3" native="true"/>
+          </item>
+         </layout>
         </widget>
         <widget class="QWidget" name="tab_3">
          <attribute name="title">
           <string>ПК1 &gt; Характеристики</string>
          </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1">
+          <item>
+           <widget class="Specifications" name="widget_4" native="true"/>
+          </item>
+         </layout>
         </widget>
        </widget>
       </item>
@@ -237,29 +236,39 @@
     </item>
    </layout>
   </widget>
+  <widget class="QStatusBar" name="statusbar"/>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1217</width>
+     <width>1221</width>
      <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuBuilds">
     <property name="title">
-     <string>Збірка</string>
+     <string>Збірка [ПК1]</string>
     </property>
-   </widget>
-   <widget class="QMenu" name="menuBases">
-    <property name="title">
-     <string>Бази даних компонентів</string>
-    </property>
+    <widget class="QMenu" name="menu_5">
+     <property name="title">
+      <string>Компоненти</string>
+     </property>
+     <addaction name="action_18"/>
+     <addaction name="action_19"/>
+    </widget>
+    <addaction name="menu_5"/>
+    <addaction name="action_17"/>
+    <addaction name="separator"/>
+    <addaction name="action_21"/>
+    <addaction name="action_22"/>
+    <addaction name="action_23"/>
    </widget>
    <widget class="QMenu" name="menuSDK">
     <property name="title">
      <string>Менеджер баз даних</string>
     </property>
+    <addaction name="action"/>
    </widget>
    <widget class="QMenu" name="menu">
     <property name="title">
@@ -268,16 +277,133 @@
    </widget>
    <widget class="QMenu" name="menuCollections">
     <property name="title">
-     <string>Колекції збірок</string>
+     <string>Колекції збірок [Мої ПК]</string>
     </property>
+    <widget class="QMenu" name="menu_2">
+     <property name="title">
+      <string>Мої ПК</string>
+     </property>
+     <addaction name="action_6"/>
+     <addaction name="action_7"/>
+    </widget>
+    <widget class="QMenu" name="menu_3">
+     <property name="title">
+      <string>Робочі</string>
+     </property>
+     <addaction name="action_8"/>
+     <addaction name="action_9"/>
+    </widget>
+    <addaction name="menu_2"/>
+    <addaction name="menu_3"/>
+    <addaction name="separator"/>
+    <addaction name="action_5"/>
+    <addaction name="action_24"/>
    </widget>
    <addaction name="menuCollections"/>
    <addaction name="menuBuilds"/>
-   <addaction name="menuBases"/>
    <addaction name="menuSDK"/>
    <addaction name="menu"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
+  <action name="action">
+   <property name="text">
+    <string>Запустити менеджер баз даних...</string>
+   </property>
+  </action>
+  <action name="action_5">
+   <property name="text">
+    <string>Створити нову колекцію...</string>
+   </property>
+  </action>
+  <action name="action_6">
+   <property name="text">
+    <string>Відкрити...</string>
+   </property>
+  </action>
+  <action name="action_7">
+   <property name="text">
+    <string>Видалити...</string>
+   </property>
+  </action>
+  <action name="action_8">
+   <property name="text">
+    <string>Відкрити...</string>
+   </property>
+  </action>
+  <action name="action_9">
+   <property name="text">
+    <string>Видалити...</string>
+   </property>
+  </action>
+  <action name="action_10">
+   <property name="text">
+    <string>ПК2</string>
+   </property>
+  </action>
+  <action name="action_12">
+   <property name="text">
+    <string>Характеристики</string>
+   </property>
+  </action>
+  <action name="action_13">
+   <property name="text">
+    <string>Процесор...</string>
+   </property>
+  </action>
+  <action name="action_15">
+   <property name="text">
+    <string>Створити нову...</string>
+   </property>
+  </action>
+  <action name="action_17">
+   <property name="text">
+    <string>Характеристики</string>
+   </property>
+  </action>
+  <action name="action_18">
+   <property name="text">
+    <string>Процесор...</string>
+   </property>
+  </action>
+  <action name="action_19">
+   <property name="text">
+    <string>Блок живлення...</string>
+   </property>
+  </action>
+  <action name="action_21">
+   <property name="text">
+    <string>Зберегти...</string>
+   </property>
+  </action>
+  <action name="action_22">
+   <property name="text">
+    <string>Копіювати...</string>
+   </property>
+  </action>
+  <action name="action_23">
+   <property name="text">
+    <string>Видалити...</string>
+   </property>
+  </action>
+  <action name="action_24">
+   <property name="text">
+    <string>Створити нову збірку [Мої ПК]...</string>
+   </property>
+  </action>
+  <action name="action_26">
+   <property name="text">
+    <string>Процесори...</string>
+   </property>
+  </action>
+  <action name="action_27">
+   <property name="text">
+    <string>Блоки живлення...</string>
+   </property>
+  </action>
+  <action name="action_28">
+   <property name="text">
+    <string>Материнські плати...</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

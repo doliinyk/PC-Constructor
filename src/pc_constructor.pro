@@ -10,17 +10,20 @@ CONFIG += c++17
 
 SOURCES += \
     components.cpp \
+    dbmanager.cpp \
     main.cpp \
     pc_constructor.cpp \
     specifications.cpp
 
 HEADERS += \
     components.h \
+    dbmanager.h \
     pc_constructor.h \
     specifications.h
 
 FORMS += \
     components.ui \
+    dbmanager.ui \
     pc_constructor.ui \
     specifications.ui
 
