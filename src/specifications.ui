@@ -27,78 +27,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QLabel" name="label">
-     <property name="font">
-      <font>
-       <pointsize>14</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Характеристики</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QTableWidget" name="tableWidget">
-     <column>
-      <property name="text">
-       <string>Потужність</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Споживання</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Ширина</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Висота</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Довжина</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Тип корпуса</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Тактова частота CPU</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Кількість ядер CPU</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Об'єм RAM</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Об'єм відеопамя'ті</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Об'єм пам'яті жорсткого диску</string>
-      </property>
-     </column>
-    </widget>
+    <widget class="QTableWidget" name="tableWidget"/>
    </item>
   </layout>
  </widget>

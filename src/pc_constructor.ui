@@ -20,7 +20,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_10" stretch="0">
     <property name="spacing">
-     <number>4</number>
+     <number>0</number>
     </property>
     <property name="leftMargin">
      <number>0</number>
@@ -35,201 +35,30 @@
      <number>0</number>
     </property>
     <item>
-     <layout class="QFormLayout" name="formLayout">
+     <layout class="QFormLayout" name="tabAndTreeLayout">
+      <property name="horizontalSpacing">
+       <number>6</number>
+      </property>
+      <property name="verticalSpacing">
+       <number>6</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <item row="0" column="1">
+       <widget class="QTabWidget" name="tabWidget">
+        <property name="currentIndex">
+         <number>-1</number>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="0">
        <widget class="QTreeWidget" name="treeWidget">
         <column>
          <property name="text">
-          <string>Мої ПК</string>
+          <string>PC Constructor</string>
          </property>
         </column>
-        <item>
-         <property name="text">
-          <string>ПК1</string>
-         </property>
-         <item>
-          <property name="text">
-           <string>Компоненти</string>
-          </property>
-          <item>
-           <property name="text">
-            <string>Процесор</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Блок живлення</string>
-           </property>
-          </item>
-         </item>
-         <item>
-          <property name="text">
-           <string>Характеристики</string>
-          </property>
-         </item>
-        </item>
-        <item>
-         <property name="text">
-          <string>ПК2</string>
-         </property>
-         <item>
-          <property name="text">
-           <string>Компоненти</string>
-          </property>
-         </item>
-        </item>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QTabWidget" name="tabWidget">
-        <property name="currentIndex">
-         <number>0</number>
-        </property>
-        <widget class="QWidget" name="tab">
-         <attribute name="title">
-          <string>ПК1</string>
-         </attribute>
-         <layout class="QVBoxLayout" name="verticalLayout_6" stretch="0,1,0">
-          <property name="sizeConstraint">
-           <enum>QLayout::SetNoConstraint</enum>
-          </property>
-          <item>
-           <widget class="QLabel" name="label">
-            <property name="font">
-             <font>
-              <pointsize>20</pointsize>
-             </font>
-            </property>
-            <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
-            </property>
-            <property name="text">
-             <string>ПК1</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,1">
-            <item>
-             <widget class="QFrame" name="frame">
-              <property name="frameShape">
-               <enum>QFrame::StyledPanel</enum>
-              </property>
-              <property name="frameShadow">
-               <enum>QFrame::Plain</enum>
-              </property>
-              <property name="lineWidth">
-               <number>1</number>
-              </property>
-              <layout class="QHBoxLayout" name="horizontalLayout">
-               <property name="leftMargin">
-                <number>0</number>
-               </property>
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <property name="rightMargin">
-                <number>0</number>
-               </property>
-               <property name="bottomMargin">
-                <number>0</number>
-               </property>
-               <item>
-                <layout class="QVBoxLayout" name="verticalLayout_7" stretch="1">
-                 <item>
-                  <widget class="Components" name="widget" native="true"/>
-                 </item>
-                </layout>
-               </item>
-              </layout>
-             </widget>
-            </item>
-            <item>
-             <widget class="QFrame" name="frame_2">
-              <property name="frameShape">
-               <enum>QFrame::StyledPanel</enum>
-              </property>
-              <property name="frameShadow">
-               <enum>QFrame::Plain</enum>
-              </property>
-              <layout class="QHBoxLayout" name="horizontalLayout_4">
-               <property name="spacing">
-                <number>0</number>
-               </property>
-               <property name="leftMargin">
-                <number>0</number>
-               </property>
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <property name="rightMargin">
-                <number>0</number>
-               </property>
-               <property name="bottomMargin">
-                <number>0</number>
-               </property>
-               <item>
-                <layout class="QVBoxLayout" name="verticalLayout_9" stretch="0">
-                 <item>
-                  <widget class="Specifications" name="widget_2" native="true"/>
-                 </item>
-                </layout>
-               </item>
-              </layout>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0,0">
-            <item>
-             <widget class="QPushButton" name="pushButton">
-              <property name="text">
-               <string>Зберегти</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="pushButton_2">
-              <property name="text">
-               <string>Копіювати</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="pushButton_3">
-              <property name="text">
-               <string>Видалити</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </widget>
-        <widget class="QWidget" name="tab_2">
-         <attribute name="title">
-          <string>ПК1 &gt; Компоненти</string>
-         </attribute>
-         <layout class="QVBoxLayout" name="verticalLayout" stretch="1">
-          <item>
-           <widget class="Components" name="widget_3" native="true"/>
-          </item>
-         </layout>
-        </widget>
-        <widget class="QWidget" name="tab_3">
-         <attribute name="title">
-          <string>ПК1 &gt; Характеристики</string>
-         </attribute>
-         <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1">
-          <item>
-           <widget class="Specifications" name="widget_4" native="true"/>
-          </item>
-         </layout>
-        </widget>
        </widget>
       </item>
      </layout>
@@ -248,177 +77,109 @@
    </property>
    <widget class="QMenu" name="menuBuilds">
     <property name="title">
-     <string>Збірка [ПК1]</string>
+     <string>Збірка</string>
     </property>
-    <widget class="QMenu" name="menu_5">
+    <widget class="QMenu" name="actionComponents">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::LeftToRight</enum>
+     </property>
      <property name="title">
       <string>Компоненти</string>
      </property>
-     <addaction name="action_18"/>
-     <addaction name="action_19"/>
     </widget>
-    <addaction name="menu_5"/>
-    <addaction name="action_17"/>
+    <addaction name="actionComponents"/>
+    <addaction name="actionSpecifications"/>
     <addaction name="separator"/>
-    <addaction name="action_21"/>
-    <addaction name="action_22"/>
-    <addaction name="action_23"/>
+    <addaction name="actionSaveBuild"/>
+    <addaction name="actionCopyBuild"/>
+    <addaction name="actionDeleteBuild"/>
    </widget>
-   <widget class="QMenu" name="menuSDK">
+   <widget class="QMenu" name="menuDBManager">
     <property name="title">
      <string>Менеджер баз даних</string>
     </property>
-    <addaction name="action"/>
+    <addaction name="actionOpenDBManagerWindow"/>
    </widget>
-   <widget class="QMenu" name="menu">
+   <widget class="QMenu" name="menuReference">
     <property name="title">
      <string>Довідка</string>
     </property>
+    <addaction name="actionAbout"/>
    </widget>
    <widget class="QMenu" name="menuCollections">
     <property name="title">
-     <string>Колекції збірок [Мої ПК]</string>
+     <string>Колекції збірок</string>
     </property>
-    <widget class="QMenu" name="menu_2">
-     <property name="title">
-      <string>Мої ПК</string>
-     </property>
-     <addaction name="action_6"/>
-     <addaction name="action_7"/>
-    </widget>
-    <widget class="QMenu" name="menu_3">
-     <property name="title">
-      <string>Робочі</string>
-     </property>
-     <addaction name="action_8"/>
-     <addaction name="action_9"/>
-    </widget>
-    <addaction name="menu_2"/>
-    <addaction name="menu_3"/>
-    <addaction name="separator"/>
-    <addaction name="action_5"/>
-    <addaction name="action_24"/>
+    <addaction name="actionNewCollection"/>
+    <addaction name="actionNewBuild"/>
    </widget>
    <addaction name="menuCollections"/>
    <addaction name="menuBuilds"/>
-   <addaction name="menuSDK"/>
-   <addaction name="menu"/>
+   <addaction name="menuDBManager"/>
+   <addaction name="menuReference"/>
   </widget>
-  <action name="action">
+  <action name="actionOpenDBManagerWindow">
    <property name="text">
     <string>Запустити менеджер баз даних...</string>
    </property>
   </action>
-  <action name="action_5">
+  <action name="actionNewCollection">
    <property name="text">
     <string>Створити нову колекцію...</string>
    </property>
-  </action>
-  <action name="action_6">
-   <property name="text">
-    <string>Відкрити...</string>
+   <property name="shortcut">
+    <string>Ctrl+Shift+N</string>
    </property>
   </action>
-  <action name="action_7">
-   <property name="text">
-    <string>Видалити...</string>
-   </property>
-  </action>
-  <action name="action_8">
-   <property name="text">
-    <string>Відкрити...</string>
-   </property>
-  </action>
-  <action name="action_9">
-   <property name="text">
-    <string>Видалити...</string>
-   </property>
-  </action>
-  <action name="action_10">
-   <property name="text">
-    <string>ПК2</string>
-   </property>
-  </action>
-  <action name="action_12">
+  <action name="actionSpecifications">
    <property name="text">
     <string>Характеристики</string>
    </property>
   </action>
-  <action name="action_13">
-   <property name="text">
-    <string>Процесор...</string>
-   </property>
-  </action>
-  <action name="action_15">
-   <property name="text">
-    <string>Створити нову...</string>
-   </property>
-  </action>
-  <action name="action_17">
-   <property name="text">
-    <string>Характеристики</string>
-   </property>
-  </action>
-  <action name="action_18">
-   <property name="text">
-    <string>Процесор...</string>
-   </property>
-  </action>
-  <action name="action_19">
-   <property name="text">
-    <string>Блок живлення...</string>
-   </property>
-  </action>
-  <action name="action_21">
+  <action name="actionSaveBuild">
    <property name="text">
     <string>Зберегти...</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
   </action>
-  <action name="action_22">
+  <action name="actionCopyBuild">
    <property name="text">
     <string>Копіювати...</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
   </action>
-  <action name="action_23">
+  <action name="actionDeleteBuild">
    <property name="text">
     <string>Видалити...</string>
    </property>
-  </action>
-  <action name="action_24">
-   <property name="text">
-    <string>Створити нову збірку [Мої ПК]...</string>
+   <property name="shortcut">
+    <string>Ctrl+Del</string>
    </property>
   </action>
-  <action name="action_26">
+  <action name="actionNewBuild">
    <property name="text">
-    <string>Процесори...</string>
+    <string>Створити нову збірку...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
    </property>
   </action>
-  <action name="action_27">
+  <action name="actionAbout">
    <property name="text">
-    <string>Блоки живлення...</string>
+    <string>Про програму...</string>
    </property>
-  </action>
-  <action name="action_28">
-   <property name="text">
-    <string>Материнські плати...</string>
+   <property name="shortcut">
+    <string>Ctrl+I</string>
    </property>
   </action>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>Components</class>
-   <extends>QWidget</extends>
-   <header location="global">components.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>Specifications</class>
-   <extends>QWidget</extends>
-   <header location="global">specifications.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>
