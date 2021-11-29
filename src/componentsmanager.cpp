@@ -1,4 +1,6 @@
 #include "componentsmanager.h"
+#include <QDir>
+#include "QFile"
 #include "ui_componentsmanager.h"
 
 ComponentsManager::ComponentsManager(QWidget *parent)
@@ -8,7 +10,11 @@ ComponentsManager::ComponentsManager(QWidget *parent)
     , activeRow(0)
 {
     ui->setupUi(this);
-    if (!QFile::exists("..db\\components\\components.sqlite")) {
+
+    if (!QDir("..\\db\\components").exists())
+        QDir().mkdir("..\\db\\components");
+
+    if (!QFile::exists("..\\db\\components\\components.sqlite")) {
         db->createDB("components\\components");
         db->connectToDB("components\\components");
         db->createTable("CREATE TABLE motherboard("
@@ -78,8 +84,8 @@ void ComponentsManager::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *compone
     model = new QSqlTableModel(this, db->getDB("components\\components"));
     model->setTable(translateText(component->text(0)));
     model->select();
-    qDebug() << translateText(component->text(0)) << component->text(0);
     ui->tableView->setModel(model);
+    ui->tableView->setColumnHidden(0, true);
 }
 
 QString ComponentsManager::translateText(QString text)
@@ -96,6 +102,7 @@ QString ComponentsManager::translateText(QString text)
         return "supply";
     if (text == "Відеокарти")
         return "gpu";
+    return text;
 }
 
 void ComponentsManager::on_tableView_clicked(const QModelIndex &index)

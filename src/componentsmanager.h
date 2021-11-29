@@ -2,10 +2,8 @@
 #define COMPONENTSMANAGER_H
 
 #include <QSqlTableModel>
-#include <QTreeWidget>
-#include <QVector>
+#include <QTreeWidgetItem>
 #include <QWidget>
-#include "QFile"
 #include "sqlitedbmanager.h"
 
 namespace Ui {
@@ -23,9 +21,7 @@ public:
 private slots:
     void on_treeWidget_itemDoubleClicked(QTreeWidgetItem *);
     void on_tableView_clicked(const QModelIndex &);
-
     void on_addComponentButton_clicked();
-
     void on_deleteComponentButton_clicked();
 
 private:

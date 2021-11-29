@@ -1,4 +1,7 @@
 #include "sqlitedbmanager.h"
+#include <QDir>
+#include <QFile>
+#include <QSqlQuery>
 
 SQLiteDBManager::SQLiteDBManager()
     : IDBManager()
@@ -16,9 +19,13 @@ QSqlDatabase SQLiteDBManager::getDB(QString dbName)
 
 bool SQLiteDBManager::createDB(QString dbName)
 {
+    if (!QDir("..\\db").exists())
+        QDir().mkdir("..\\db");
+
     if (QFile::exists(nameFileDB(dbName)))
         return false;
 
+    db.close();
     db.setDatabaseName(nameFileDB(dbName));
 
     return db.open();
@@ -37,6 +44,7 @@ bool SQLiteDBManager::deleteDB(QString dbName)
 
 bool SQLiteDBManager::connectToDB(QString dbName)
 {
+    db.close();
     db.setDatabaseName(nameFileDB(dbName));
 
     return db.open();

@@ -1,8 +1,7 @@
 #ifndef SQLITEDBMANAGER_H
 #define SQLITEDBMANAGER_H
 
-#include <QFile>
-#include <QSqlQuery>
+#include <QStringList>
 #include "idbmanager.h"
 
 class SQLiteDBManager : public IDBManager
