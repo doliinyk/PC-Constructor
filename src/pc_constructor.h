@@ -2,8 +2,10 @@
 #define PC_CONSTRUCTOR_H
 
 #include <QMainWindow>
+#include <QTreeWidget>
 #include <QVector>
 #include "collection.h"
+#include "componentsmanager.h"
 #include "componentswidget.h"
 #include "createbuilddialog.h"
 #include "createcollectiondialog.h"
@@ -30,6 +32,9 @@ private slots:
     void createCollection(QString);
     void createBuild(QString);
     void on_actionDeleteBuild_triggered();
+    void on_tabWidget_tabBarClicked(int);
+    void on_treeWidget_itemDoubleClicked(QTreeWidgetItem *);
+    void on_actionOpenComponentsManager_triggered();
 
 private:
     Ui::PC_Constructor *ui;
@@ -37,8 +42,10 @@ private:
     Collection collection;
     QString activeCollectionName;
     QString activeBuildName;
+    unsigned int lastBuildTabIndex;
     CreateBuildDialog createBuildDialog;
     CreateCollectionDialog createCollectionDialog;
+    ComponentsManager componentsManager;
 };
 
 #endif // PC_CONSTRUCTOR_H

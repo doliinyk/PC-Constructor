@@ -13,3 +13,8 @@ SingleComponentWidget::~SingleComponentWidget()
 {
     delete ui;
 }
+
+void SingleComponentWidget::on_pushButton_clicked()
+{
+    delete this;
+}

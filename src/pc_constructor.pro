@@ -9,8 +9,8 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    build.cpp \
     collection.cpp \
+    componentsmanager.cpp \
     componentswidget.cpp \
     createbuilddialog.cpp \
     createcollectiondialog.cpp \
@@ -22,8 +22,8 @@ SOURCES += \
     sqlitedbmanager.cpp
 
 HEADERS += \
-    build.h \
     collection.h \
+    componentsmanager.h \
     componentswidget.h \
     createbuilddialog.h \
     createcollectiondialog.h \
@@ -34,6 +34,7 @@ HEADERS += \
     sqlitedbmanager.h
 
 FORMS += \
+    componentsmanager.ui \
     componentswidget.ui \
     createbuilddialog.ui \
     createcollectiondialog.ui \

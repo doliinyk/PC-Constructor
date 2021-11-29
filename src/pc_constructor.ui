@@ -37,10 +37,10 @@
     <item>
      <layout class="QFormLayout" name="tabAndTreeLayout">
       <property name="horizontalSpacing">
-       <number>6</number>
+       <number>4</number>
       </property>
       <property name="verticalSpacing">
-       <number>6</number>
+       <number>4</number>
       </property>
       <property name="topMargin">
        <number>0</number>
@@ -82,13 +82,10 @@
     <property name="title">
      <string>Збірка</string>
     </property>
-    <addaction name="actionComponents_2"/>
-    <addaction name="actionSpecifications"/>
-    <addaction name="separator"/>
     <addaction name="actionSaveBuild"/>
     <addaction name="actionDeleteBuild"/>
    </widget>
-   <widget class="QMenu" name="menuDBManager">
+   <widget class="QMenu" name="menuComponentsManager">
     <property name="title">
      <string>Менеджер компонентів</string>
     </property>
@@ -109,7 +106,7 @@
    </widget>
    <addaction name="menuCollections"/>
    <addaction name="menuBuilds"/>
-   <addaction name="menuDBManager"/>
+   <addaction name="menuComponentsManager"/>
    <addaction name="menuReference"/>
   </widget>
   <action name="actionOpenComponentsManager">
@@ -123,11 +120,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+N</string>
-   </property>
-  </action>
-  <action name="actionSpecifications">
-   <property name="text">
-    <string>Характеристики</string>
    </property>
   </action>
   <action name="actionSaveBuild">
@@ -163,14 +155,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+I</string>
-   </property>
-  </action>
-  <action name="actionComponents_2">
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Компоненти</string>
    </property>
   </action>
  </widget>

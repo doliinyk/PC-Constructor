@@ -7,6 +7,7 @@
 PC_Constructor::PC_Constructor(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::PC_Constructor)
+    , lastBuildTabIndex(0)
 {
     ui->setupUi(this);
 
@@ -18,14 +19,6 @@ PC_Constructor::PC_Constructor(QWidget *parent)
             &CreateBuildDialog::getBuildName,
             this,
             &PC_Constructor::createBuild);
-    connect(ui->treeWidget, &QTreeWidget::itemDoubleClicked, [this](QTreeWidgetItem *build) {
-        if (activeBuildName == build->text(0))
-            return;
-        activeBuildName = build->text(0);
-        ui->menuBuilds->setTitle("Збірка [" + activeBuildName + "]");
-        ui->menuBuilds->setEnabled(true);
-        ui->actionDeleteBuild->setShortcut(QKeySequence("Ctrl+Del"));
-    });
 }
 
 PC_Constructor::~PC_Constructor()
@@ -66,7 +59,9 @@ void PC_Constructor::on_actionDeleteBuild_triggered()
     ui->menuBuilds->setTitle("Збірка");
     ui->menuBuilds->setEnabled(false);
     ui->actionDeleteBuild->setShortcut(QKeySequence());
+    ui->tabWidget->removeTab(ui->tabWidget->currentIndex());
     activeBuildName.clear();
+    lastBuildTabIndex--;
 
     QStringList tempBuildNames = collection.getBuildNames();
     for (int i = 0; i < tempBuildNames.size(); i++) {
@@ -87,11 +82,14 @@ void PC_Constructor::createCollection(QString collectionName)
 
     activeCollectionName = collection.getName();
     ui->treeWidget->setHeaderLabel(activeCollectionName);
+    ui->treeWidget->clear();
     collectionMenu->addAction(openCollection);
     collectionMenu->addAction(deleteCollection);
     ui->menuCollections->insertMenu(ui->actionNewCollection, collectionMenu);
     ui->menuCollections->setTitle("Колекції збірок [" + activeCollectionName + "]");
+    ui->menuBuilds->setTitle("Збірка");
     ui->actionNewBuild->setEnabled(true);
+    ui->tabWidget->clear();
 
     connect(openCollection, &QAction::triggered, [this, collectionName]() {
         if (activeCollectionName == collectionName
@@ -104,6 +102,7 @@ void PC_Constructor::createCollection(QString collectionName)
         ui->treeWidget->setHeaderLabel(activeCollectionName);
         ui->treeWidget->clear();
         ui->actionDeleteBuild->setShortcut(QKeySequence());
+        ui->tabWidget->clear();
 
         QStringList tempBuildNames = collection.getBuildNames();
         for (int i = 0; i < tempBuildNames.size(); i++) {
@@ -131,7 +130,9 @@ void PC_Constructor::createCollection(QString collectionName)
                     ui->menuBuilds->setEnabled(false);
                     ui->actionNewBuild->setEnabled(false);
                     ui->actionDeleteBuild->setShortcut(QKeySequence());
+                    ui->tabWidget->clear();
                     activeCollectionName.clear();
+                    lastBuildTabIndex = 0;
                 }
                 delete openCollection;
                 delete deleteCollection;
@@ -147,7 +148,7 @@ void PC_Constructor::createBuild(QString buildName)
     activeBuildName = buildName;
     QTreeWidgetItem *buildItem = new QTreeWidgetItem;
     buildItem->setText(0, activeBuildName);
-    ui->treeWidget->insertTopLevelItem(0, buildItem);
+    ui->treeWidget->addTopLevelItem(buildItem);
     ui->menuBuilds->setTitle("Збірка [" + activeBuildName + "]");
     ui->menuBuilds->setEnabled(true);
     ui->actionDeleteBuild->setShortcut(QKeySequence("Ctrl+Del"));
@@ -157,4 +158,33 @@ void PC_Constructor::createBuild(QString buildName)
     tabHBoxLayout->addWidget(new ComponentsWidget, QSizePolicy::Maximum);
     tabHBoxLayout->addWidget(new SpecificationsWidget, QSizePolicy::Maximum);
     ui->tabWidget->addTab(tempTabWidget, buildName);
+    ui->tabWidget->setCurrentIndex(lastBuildTabIndex++);
+}
+
+void PC_Constructor::on_tabWidget_tabBarClicked(int index)
+{
+    if (index == ui->tabWidget->currentIndex())
+        return;
+
+    activeBuildName = ui->tabWidget->tabText(index);
+    ui->menuBuilds->setTitle("Збірка [" + activeBuildName + "]");
+    ui->menuBuilds->setEnabled(true);
+    ui->actionDeleteBuild->setShortcut(QKeySequence("Ctrl+Del"));
+}
+
+void PC_Constructor::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *build)
+{
+    if (activeBuildName == build->text(0))
+        return;
+
+    activeBuildName = build->text(0);
+    ui->menuBuilds->setTitle("Збірка [" + activeBuildName + "]");
+    ui->menuBuilds->setEnabled(true);
+    ui->actionDeleteBuild->setShortcut(QKeySequence("Ctrl+Del"));
+    ui->tabWidget->setCurrentIndex(ui->treeWidget->currentIndex().row());
+}
+
+void PC_Constructor::on_actionOpenComponentsManager_triggered()
+{
+    componentsManager.show();
 }

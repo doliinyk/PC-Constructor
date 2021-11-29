@@ -20,7 +20,6 @@ private slots:
 
 private:
     Ui::ComponentsWidget *ui;
-    QVector<QString> componentNames;
 };
 
 #endif // COMPONENTSWIDGET_H

@@ -32,7 +32,7 @@ bool Collection::createBuild(QString buildName)
                              "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                              "motherboard INTEGER NOT NULL, "
                              "cpu INTEGER NOT NULL, "
-                             "drive INTEGER NOT NULL, "
+                             "rom INTEGER NOT NULL, "
                              "ram INTEGER NOT NULL, "
                              "supply INTEGER NOT NULL, "
                              "gpu INTEGER, "
