@@ -4,8 +4,10 @@
 #include <QMainWindow>
 #include <QVector>
 #include "collection.h"
+#include "componentswidget.h"
 #include "createbuilddialog.h"
 #include "createcollectiondialog.h"
+#include "specificationswidget.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -23,24 +25,18 @@ public:
 
 private slots:
     void on_actionNewCollection_triggered();
-
     void on_actionNewBuild_triggered();
-
     void on_actionAbout_triggered();
-
     void createCollection(QString);
-
     void createBuild(QString);
-
     void on_actionDeleteBuild_triggered();
 
 private:
     Ui::PC_Constructor *ui;
 
-    Collection *collection;
+    Collection collection;
     QString activeCollectionName;
     QString activeBuildName;
-    //QVector<Collection> collections;
     CreateBuildDialog createBuildDialog;
     CreateCollectionDialog createCollectionDialog;
 };

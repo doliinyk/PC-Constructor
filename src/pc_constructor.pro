@@ -11,35 +11,35 @@ CONFIG += c++17
 SOURCES += \
     build.cpp \
     collection.cpp \
-    components.cpp \
+    componentswidget.cpp \
     createbuilddialog.cpp \
     createcollectiondialog.cpp \
-    dbmanagerwindow.cpp \
     idbmanager.cpp \
     main.cpp \
     pc_constructor.cpp \
-    specifications.cpp \
+    singlecomponentwidget.cpp \
+    specificationswidget.cpp \
     sqlitedbmanager.cpp
 
 HEADERS += \
     build.h \
     collection.h \
-    components.h \
+    componentswidget.h \
     createbuilddialog.h \
     createcollectiondialog.h \
-    dbmanagerwindow.h \
     idbmanager.h \
     pc_constructor.h \
-    specifications.h \
+    singlecomponentwidget.h \
+    specificationswidget.h \
     sqlitedbmanager.h
 
 FORMS += \
-    components.ui \
+    componentswidget.ui \
     createbuilddialog.ui \
     createcollectiondialog.ui \
-    dbmanagerwindow.ui \
     pc_constructor.ui \
-    specifications.ui
+    singlecomponentwidget.ui \
+    specificationswidget.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -18,7 +18,7 @@
     <normaloff>../res/mainico.png</normaloff>../res/mainico.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout_10" stretch="0">
+   <layout class="QHBoxLayout" name="horizontalLayout" stretch="0">
     <property name="spacing">
      <number>0</number>
     </property>
@@ -76,32 +76,23 @@
     </rect>
    </property>
    <widget class="QMenu" name="menuBuilds">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="title">
      <string>Збірка</string>
     </property>
-    <widget class="QMenu" name="actionComponents">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::LeftToRight</enum>
-     </property>
-     <property name="title">
-      <string>Компоненти</string>
-     </property>
-    </widget>
-    <addaction name="actionComponents"/>
+    <addaction name="actionComponents_2"/>
     <addaction name="actionSpecifications"/>
     <addaction name="separator"/>
     <addaction name="actionSaveBuild"/>
-    <addaction name="actionCopyBuild"/>
     <addaction name="actionDeleteBuild"/>
    </widget>
    <widget class="QMenu" name="menuDBManager">
     <property name="title">
-     <string>Менеджер баз даних</string>
+     <string>Менеджер компонентів</string>
     </property>
-    <addaction name="actionOpenDBManagerWindow"/>
+    <addaction name="actionOpenComponentsManager"/>
    </widget>
    <widget class="QMenu" name="menuReference">
     <property name="title">
@@ -121,9 +112,9 @@
    <addaction name="menuDBManager"/>
    <addaction name="menuReference"/>
   </widget>
-  <action name="actionOpenDBManagerWindow">
+  <action name="actionOpenComponentsManager">
    <property name="text">
-    <string>Запустити менеджер баз даних...</string>
+    <string>Запустити менеджер компонентів...</string>
    </property>
   </action>
   <action name="actionNewCollection">
@@ -147,23 +138,18 @@
     <string>Ctrl+S</string>
    </property>
   </action>
-  <action name="actionCopyBuild">
-   <property name="text">
-    <string>Копіювати...</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+C</string>
-   </property>
-  </action>
   <action name="actionDeleteBuild">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Видалити...</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+Del</string>
-   </property>
   </action>
   <action name="actionNewBuild">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Створити нову збірку...</string>
    </property>
@@ -177,6 +163,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+I</string>
+   </property>
+  </action>
+  <action name="actionComponents_2">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Компоненти</string>
    </property>
   </action>
  </widget>

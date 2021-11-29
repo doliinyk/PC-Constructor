@@ -1,16 +1,10 @@
 #ifndef BUILD_H
 #define BUILD_H
 
-#include <QObject>
-
-class Build : public QObject
+class Build
 {
-    Q_OBJECT
 public:
-    explicit Build(QObject *parent = nullptr);
-
-signals:
-
+    explicit Build();
 };
 
 #endif // BUILD_H

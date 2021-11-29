@@ -12,12 +12,13 @@ public:
 
     QString getName();
 
+    QSqlDatabase getDB(QString);
     bool createCollection(QString);
     bool createBuild(QString);
-    QVector<QString> getBuildNames();
+    QStringList getBuildNames();
     bool deleteBuild(QString);
-    bool connectToDB();
-    bool deleteDB();
+    bool connectToCollection(QString);
+    bool deleteCollection(QString);
 
 private:
     IDBManager *db;

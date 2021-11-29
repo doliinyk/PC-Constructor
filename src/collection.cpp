@@ -14,6 +14,11 @@ QString Collection::getName()
     return name;
 }
 
+QSqlDatabase Collection::getDB(QString dbName)
+{
+    return db->getDB(dbName);
+}
+
 bool Collection::createCollection(QString collectionName)
 {
     name = collectionName;
@@ -23,19 +28,19 @@ bool Collection::createCollection(QString collectionName)
 bool Collection::createBuild(QString buildName)
 {
     return db->createTable("CREATE TABLE " + buildName
-                               + " ("
-                                 "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-                                 "motherboard INTEGER NOT NULL,"
-                                 "cpu INTEGER NOT NULL,"
-                                 "drive INTEGER NOT NULL,"
-                                 "ram INTEGER NOT NULL,"
-                                 "gpu INTEGER,"
-                                 "gpu2 INTEGER,"
-                                 "supply INTEGER NOT NULL)",
-                           buildName);
+                           + "("
+                             "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                             "motherboard INTEGER NOT NULL, "
+                             "cpu INTEGER NOT NULL, "
+                             "drive INTEGER NOT NULL, "
+                             "ram INTEGER NOT NULL, "
+                             "supply INTEGER NOT NULL, "
+                             "gpu INTEGER, "
+                             "gpu2 INTEGER"
+                             ")");
 }
 
-QVector<QString> Collection::getBuildNames()
+QStringList Collection::getBuildNames()
 {
     return db->getTableNames();
 }
@@ -45,12 +50,13 @@ bool Collection::deleteBuild(QString buildName)
     return db->deleteTable(buildName);
 }
 
-bool Collection::connectToDB()
+bool Collection::connectToCollection(QString dbName)
 {
-    return db->connectToDB(name);
+    name = dbName;
+    return db->connectToDB(dbName);
 }
 
-bool Collection::deleteDB()
+bool Collection::deleteCollection(QString dbName)
 {
-    return db->deleteDB(name);
+    return db->deleteDB(dbName);
 }
