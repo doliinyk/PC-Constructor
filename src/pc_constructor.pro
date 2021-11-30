@@ -9,11 +9,10 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    collection.cpp \
     componentsmanager.cpp \
     componentswidget.cpp \
     createbuilddialog.cpp \
-    createcollectiondialog.cpp \
+    createcomponentdialog.cpp \
     idbmanager.cpp \
     main.cpp \
     pc_constructor.cpp \
@@ -22,11 +21,10 @@ SOURCES += \
     sqlitedbmanager.cpp
 
 HEADERS += \
-    collection.h \
     componentsmanager.h \
     componentswidget.h \
     createbuilddialog.h \
-    createcollectiondialog.h \
+    createcomponentdialog.h \
     idbmanager.h \
     pc_constructor.h \
     singlecomponentwidget.h \
@@ -37,7 +35,7 @@ FORMS += \
     componentsmanager.ui \
     componentswidget.ui \
     createbuilddialog.ui \
-    createcollectiondialog.ui \
+    createcomponentdialog.ui \
     pc_constructor.ui \
     singlecomponentwidget.ui \
     specificationswidget.ui

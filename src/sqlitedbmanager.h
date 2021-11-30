@@ -1,25 +1,25 @@
 #ifndef SQLITEDBMANAGER_H
 #define SQLITEDBMANAGER_H
 
-#include <QStringList>
 #include "idbmanager.h"
 
 class SQLiteDBManager : public IDBManager
 {
 public:
-    SQLiteDBManager();
     virtual ~SQLiteDBManager() override;
+    static SQLiteDBManager *getInstance();
 
-    virtual QSqlDatabase getDB(QString) override;
-    virtual bool createDB(QString) override;
-    virtual bool deleteDB(QString) override;
-    virtual bool connectToDB(QString) override;
-    virtual bool createTable(QString) override;
-    virtual bool deleteTable(QString) override;
-    virtual QStringList getTableNames() override;
+    virtual QSqlDatabase getDB() override;
+    virtual bool connectToDB() override;
+    virtual bool runScript(QString script) override;
 
 private:
-    virtual QString nameFileDB(QString) override;
+    QSqlDatabase db;
+    static SQLiteDBManager *instance;
+
+    SQLiteDBManager();
+
+    bool openDB();
 };
 
 #endif // SQLITEDBMANAGER_H

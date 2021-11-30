@@ -2,6 +2,8 @@
 #define SINGLECOMPONENTWIDGET_H
 
 #include <QWidget>
+#include "QSqlTableModel"
+#include "sqlitedbmanager.h"
 
 namespace Ui {
 class SingleComponentWidget;
@@ -20,6 +22,8 @@ private slots:
 
 private:
     Ui::SingleComponentWidget *ui;
+    IDBManager *db;
+    QSqlTableModel *model;
 };
 
 #endif // SINGLECOMPONENTWIDGET_H

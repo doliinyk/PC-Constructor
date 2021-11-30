@@ -3,13 +3,11 @@
 
 #include <QMainWindow>
 #include <QTreeWidget>
-#include <QVector>
-#include "collection.h"
 #include "componentsmanager.h"
 #include "componentswidget.h"
 #include "createbuilddialog.h"
-#include "createcollectiondialog.h"
 #include "specificationswidget.h"
+#include "sqlitedbmanager.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -26,26 +24,25 @@ public:
     ~PC_Constructor();
 
 private slots:
-    void on_actionNewCollection_triggered();
-    void on_actionNewBuild_triggered();
-    void on_actionAbout_triggered();
-    void createCollection(QString);
-    void createBuild(QString);
+    void on_action_NewBuild_triggered();
+    void createBuild(QString buildName);
     void on_actionDeleteBuild_triggered();
-    void on_tabWidget_tabBarClicked(int);
-    void on_treeWidget_itemDoubleClicked(QTreeWidgetItem *);
+    void on_tabWidget_tabBarClicked(int index);
+    void on_treeWidget_itemDoubleClicked(QTreeWidgetItem *build);
     void on_actionOpenComponentsManager_triggered();
+    void on_actionAbout_triggered();
 
 private:
     Ui::PC_Constructor *ui;
+    IDBManager *db;
 
-    Collection collection;
-    QString activeCollectionName;
     QString activeBuildName;
-    unsigned int lastBuildTabIndex;
     CreateBuildDialog createBuildDialog;
-    CreateCollectionDialog createCollectionDialog;
     ComponentsManager componentsManager;
+
+    void setValidBuildMenuActions();
+    void setTreeWidgetBuilds();
+    void setTabWidgetBuilds();
 };
 
 #endif // PC_CONSTRUCTOR_H

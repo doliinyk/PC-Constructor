@@ -47,6 +47,12 @@
       </property>
       <item row="0" column="1">
        <widget class="QTabWidget" name="tabWidget">
+        <property name="font">
+         <font>
+          <family>Roboto</family>
+          <pointsize>11</pointsize>
+         </font>
+        </property>
         <property name="currentIndex">
          <number>-1</number>
         </property>
@@ -54,6 +60,12 @@
       </item>
       <item row="0" column="0">
        <widget class="QTreeWidget" name="treeWidget">
+        <property name="font">
+         <font>
+          <family>Roboto</family>
+          <pointsize>11</pointsize>
+         </font>
+        </property>
         <column>
          <property name="text">
           <string>PC Constructor</string>
@@ -77,13 +89,15 @@
    </property>
    <widget class="QMenu" name="menuBuilds">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="title">
      <string>Збірка</string>
     </property>
     <addaction name="actionSaveBuild"/>
     <addaction name="actionDeleteBuild"/>
+    <addaction name="separator"/>
+    <addaction name="action_NewBuild"/>
    </widget>
    <widget class="QMenu" name="menuComponentsManager">
     <property name="title">
@@ -97,14 +111,6 @@
     </property>
     <addaction name="actionAbout"/>
    </widget>
-   <widget class="QMenu" name="menuCollections">
-    <property name="title">
-     <string>Колекції збірок</string>
-    </property>
-    <addaction name="actionNewCollection"/>
-    <addaction name="actionNewBuild"/>
-   </widget>
-   <addaction name="menuCollections"/>
    <addaction name="menuBuilds"/>
    <addaction name="menuComponentsManager"/>
    <addaction name="menuReference"/>
@@ -114,15 +120,10 @@
     <string>Запустити менеджер компонентів...</string>
    </property>
   </action>
-  <action name="actionNewCollection">
-   <property name="text">
-    <string>Створити нову колекцію...</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+N</string>
-   </property>
-  </action>
   <action name="actionSaveBuild">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Зберегти...</string>
    </property>
@@ -132,21 +133,13 @@
   </action>
   <action name="actionDeleteBuild">
    <property name="enabled">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="text">
     <string>Видалити...</string>
    </property>
-  </action>
-  <action name="actionNewBuild">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Створити нову збірку...</string>
-   </property>
    <property name="shortcut">
-    <string>Ctrl+N</string>
+    <string>Ctrl+Del</string>
    </property>
   </action>
   <action name="actionAbout">
@@ -155,6 +148,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+I</string>
+   </property>
+  </action>
+  <action name="action_NewBuild">
+   <property name="text">
+    <string>Нова збірка...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
    </property>
   </action>
  </widget>

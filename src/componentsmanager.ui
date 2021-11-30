@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1229</width>
-    <height>586</height>
+    <width>1197</width>
+    <height>538</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,17 +28,31 @@
    </property>
    <item>
     <layout class="QGridLayout" name="gridLayout" columnstretch="0,1">
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
      <property name="spacing">
       <number>4</number>
      </property>
      <item row="1" column="1">
-      <widget class="QTableView" name="tableView"/>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLabel" name="label">
+      <widget class="QTableView" name="tableView">
        <property name="font">
         <font>
-         <pointsize>12</pointsize>
+         <family>Roboto</family>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="labelComponent">
+       <property name="font">
+        <font>
+         <family>Roboto</family>
+         <pointsize>11</pointsize>
         </font>
        </property>
        <property name="text">
@@ -54,11 +68,18 @@
        <property name="spacing">
         <number>4</number>
        </property>
+       <property name="bottomMargin">
+        <number>4</number>
+       </property>
        <item>
         <widget class="QPushButton" name="addComponentButton">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
          <property name="font">
           <font>
-           <pointsize>12</pointsize>
+           <family>Roboto</family>
+           <pointsize>11</pointsize>
           </font>
          </property>
          <property name="text">
@@ -68,9 +89,13 @@
        </item>
        <item>
         <widget class="QPushButton" name="deleteComponentButton">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="font">
           <font>
-           <pointsize>12</pointsize>
+           <family>Roboto</family>
+           <pointsize>11</pointsize>
           </font>
          </property>
          <property name="text">
@@ -82,6 +107,42 @@
      </item>
      <item row="0" column="0" rowspan="3">
       <widget class="QTreeWidget" name="treeWidget">
+       <property name="font">
+        <font>
+         <family>Roboto</family>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="textElideMode">
+        <enum>Qt::ElideRight</enum>
+       </property>
+       <property name="autoExpandDelay">
+        <number>-1</number>
+       </property>
+       <property name="indentation">
+        <number>20</number>
+       </property>
+       <property name="itemsExpandable">
+        <bool>true</bool>
+       </property>
+       <property name="sortingEnabled">
+        <bool>false</bool>
+       </property>
+       <property name="animated">
+        <bool>false</bool>
+       </property>
+       <property name="expandsOnDoubleClick">
+        <bool>false</bool>
+       </property>
+       <attribute name="headerCascadingSectionResizes">
+        <bool>true</bool>
+       </attribute>
+       <attribute name="headerHighlightSections">
+        <bool>false</bool>
+       </attribute>
        <column>
         <property name="text">
          <string>Менеджер компонентів</string>

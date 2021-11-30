@@ -19,18 +19,18 @@ public:
     ~ComponentsManager();
 
 private slots:
-    void on_treeWidget_itemDoubleClicked(QTreeWidgetItem *);
-    void on_tableView_clicked(const QModelIndex &);
+    void on_treeWidget_itemDoubleClicked(QTreeWidgetItem *component);
+    void on_tableView_clicked(const QModelIndex &index);
     void on_addComponentButton_clicked();
     void on_deleteComponentButton_clicked();
 
 private:
     Ui::ComponentsManager *ui;
-    IDBManager *db;
     QSqlTableModel *model;
+    IDBManager *db;
     unsigned int activeRow;
 
-    QString translateText(QString);
+    QString translateText(QString text);
 };
 
 #endif // COMPONENTSMANAGER_H

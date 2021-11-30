@@ -16,10 +16,11 @@ public:
     ~ComponentsWidget();
 
 private slots:
-    void on_pushButton_clicked();
+    void on_addComponentButton_clicked();
 
 private:
     Ui::ComponentsWidget *ui;
+    QStringList componentList;
 };
 
 #endif // COMPONENTSWIDGET_H

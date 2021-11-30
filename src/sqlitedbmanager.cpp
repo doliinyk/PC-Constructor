@@ -1,76 +1,49 @@
 #include "sqlitedbmanager.h"
 #include <QDir>
-#include <QFile>
 #include <QSqlQuery>
 
-SQLiteDBManager::SQLiteDBManager()
-    : IDBManager()
-{
-    db = QSqlDatabase::addDatabase("QSQLITE");
-}
+SQLiteDBManager *SQLiteDBManager::instance = nullptr;
+
+SQLiteDBManager::SQLiteDBManager() {}
 
 SQLiteDBManager::~SQLiteDBManager() {}
 
-QSqlDatabase SQLiteDBManager::getDB(QString dbName)
+SQLiteDBManager *SQLiteDBManager::getInstance()
 {
-    if (connectToDB(dbName))
-        return db;
+    return instance ?: instance = new SQLiteDBManager;
 }
 
-bool SQLiteDBManager::createDB(QString dbName)
+QSqlDatabase SQLiteDBManager::getDB()
 {
-    if (!QDir("..\\db").exists())
-        QDir().mkdir("..\\db");
-
-    if (QFile::exists(nameFileDB(dbName)))
-        return false;
-
-    db.close();
-    db.setDatabaseName(nameFileDB(dbName));
-
-    return db.open();
+    return db;
 }
 
-bool SQLiteDBManager::deleteDB(QString dbName)
+bool SQLiteDBManager::connectToDB()
 {
-    if (!QFile::exists(nameFileDB(dbName)))
-        return false;
-
-    db.close();
-    db.removeDatabase(nameFileDB(dbName));
-
-    return QFile::remove(nameFileDB(dbName));
+    return openDB();
 }
 
-bool SQLiteDBManager::connectToDB(QString dbName)
-{
-    db.close();
-    db.setDatabaseName(nameFileDB(dbName));
-
-    return db.open();
-}
-
-bool SQLiteDBManager::createTable(QString script)
+bool SQLiteDBManager::runScript(QString script)
 {
     return QSqlQuery(db).exec(script);
 }
 
-bool SQLiteDBManager::deleteTable(QString tableName)
-{
-    return QSqlQuery(db).exec("DROP TABLE " + tableName);
-}
+//QStringList SQLiteDBManager::getTableNames()
+//{
+//    QStringList tempTablesNames = db.tables();
+//    for (int i = tempTablesNames.size() - 1; i >= 0; i--)
+//        if (tempTablesNames[i].startsWith("sqlite_") || tempTablesNames[i].startsWith("__"))
+//            tempTablesNames.erase(tempTablesNames.constBegin() + i);
 
-QStringList SQLiteDBManager::getTableNames()
-{
-    QStringList temp = db.tables();
-    for (int i = 0; i < temp.size(); i++)
-        if (temp[i].startsWith("sqlite_"))
-            temp.erase(temp.begin() + i);
+//    return tempTablesNames;
+//}
 
-    return temp;
-}
-
-QString SQLiteDBManager::nameFileDB(QString dbName)
+bool SQLiteDBManager::openDB()
 {
-    return "..\\db\\" + dbName + ".sqlite";
+    db = QSqlDatabase::addDatabase("QSQLITE");
+    if (!QDir("db").exists())
+        QDir().mkdir("db");
+
+    db.setDatabaseName("db//pc_constructor_db.sqlite");
+    return db.open();
 }
