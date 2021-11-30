@@ -2,7 +2,6 @@
 #define IDBMANAGER_H
 
 #include <QSqlDatabase>
-#include <QStringList>
 
 class IDBManager
 {
@@ -11,7 +10,7 @@ public:
     virtual ~IDBManager();
 
     virtual QSqlDatabase getDB() = 0;
-    virtual bool connectToDB() = 0;
+    virtual bool connectToDB(QString dbName) = 0;
     virtual bool runScript(QString script) = 0;
 };
 

@@ -10,8 +10,7 @@ ComponentsManager::ComponentsManager(QWidget *parent)
     , activeRow(0)
 {
     ui->setupUi(this);
-
-    db->connectToDB();
+    db->connectToDB("pc_constructor_db");
     db->runScript("CREATE TABLE motherboard"
                   "("
                   "id INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -20,55 +19,63 @@ ComponentsManager::ComponentsManager(QWidget *parent)
                   "socket VARCHAR NOT NULL, "
                   "ramType VARCHAR NOT NULL, "
                   "romInterface VARCHAR NOT NULL, "
-                  "year INTEGER NOT NULL, "
-                  "price INTEGER NOT NULL"
+                  "price INTEGER NOT NULL,"
+                  "UNIQUE(name)"
                   ")");
     db->runScript("CREATE TABLE cpu"
                   "("
                   "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                   "name VARCHAR NOT NULL, "
-                  "socket VARCHAR NOT NULL, "
                   "core INTEGER NOT NULL, "
                   "thread INTEGER NOT NULL, "
+                  "frequency INTEGER NOT NULL, "
                   "graphics INTEGER NOT NULL, "
                   "cache INTEGER NOT NULL, "
+                  "socket VARCHAR NOT NULL, "
+                  "power INTEGER NOT NULL, "
                   "price INTEGER NOT NULL"
-                  ")");
-    db->runScript("CREATE TABLE rom"
-                  "("
-                  "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-                  "name VARCHAR NOT NULL, "
-                  "romInterface VARCHAR NOT NULL, "
-                  "type VARCHAR NOT NULL, "
-                  "space INTEGER NOT NULL, "
-                  "readSpeed INTEGER NOT NULL, "
-                  "writeSpeed INTEGER NOT NULL, "
-                  "price INTEGER NOT NULL"
+                  "UNIQUE(name)"
                   ")");
     db->runScript("CREATE TABLE ram"
                   "("
                   "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                   "name VARCHAR NOT NULL, "
-                  "ramType VARCHAR NOT NULL, "
+                  "storage INTEGER NOT NULL, "
                   "frequency INTEGER NOT NULL, "
-                  "space INTEGER NOT NULL, "
+                  "ramType VARCHAR NOT NULL, "
+                  "power INTEGER NOT NULL, "
                   "price INTEGER NOT NULL"
+                  "UNIQUE(name)"
                   ")");
-    db->runScript("CREATE TABLE supply"
+    db->runScript("CREATE TABLE rom"
                   "("
                   "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                   "name VARCHAR NOT NULL, "
-                  "power INTEGER NOT NULL, "
-                  "slots INTEGER NOT NULL, "
+                  "type VARCHAR NOT NULL, "
+                  "storage INTEGER NOT NULL, "
+                  "readSpeed INTEGER NOT NULL, "
+                  "writeSpeed INTEGER NOT NULL, "
+                  "romInterface VARCHAR NOT NULL, "
                   "price INTEGER NOT NULL"
+                  "UNIQUE(name)"
                   ")");
     db->runScript("CREATE TABLE gpu"
                   "("
                   "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                   "name VARCHAR NOT NULL, "
+                  "storage INTEGER NOT NULL, "
                   "frequency INTEGER NOT NULL, "
-                  "space INTEGER NOT NULL, "
+                  "power INTEGER NOT NULL, "
                   "price INTEGER NOT NULL"
+                  "UNIQUE(name)"
+                  ")");
+    db->runScript("CREATE TABLE powerSupply"
+                  "("
+                  "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                  "name VARCHAR NOT NULL, "
+                  "power INTEGER NOT NULL, "
+                  "price INTEGER NOT NULL"
+                  "UNIQUE(name)"
                   ")");
 }
 
@@ -80,11 +87,13 @@ ComponentsManager::~ComponentsManager()
 void ComponentsManager::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *component)
 {
     ui->labelComponent->setText(component->text(0));
+
     model = new QSqlTableModel(this, db->getDB());
     model->setTable(translateText(component->text(0)));
     model->select();
+
     ui->tableView->setModel(model);
-    //ui->tableView->setColumnHidden(0, true);
+    ui->tableView->setColumnHidden(0, true);
 }
 
 QString ComponentsManager::translateText(QString text)
@@ -93,14 +102,14 @@ QString ComponentsManager::translateText(QString text)
         return "motherboard";
     if (text == "Процесори")
         return "cpu";
-    if (text == "Накопичувачі")
-        return "rom";
     if (text == "Оперативна пам'ять")
         return "ram";
-    if (text == "Блоки живлення")
-        return "supply";
+    if (text == "Накопичувачі")
+        return "rom";
     if (text == "Відеокарти")
-        return "builds";
+        return "gpu";
+    if (text == "Блоки живлення")
+        return "powerSupply";
     return text;
 }
 

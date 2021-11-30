@@ -160,22 +160,22 @@
        </item>
        <item>
         <property name="text">
-         <string>Накопичувачі</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
          <string>Оперативна пам'ять</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Блоки живлення</string>
+         <string>Накопичувачі</string>
         </property>
        </item>
        <item>
         <property name="text">
          <string>Відеокарти</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Блоки живлення</string>
         </property>
        </item>
       </widget>

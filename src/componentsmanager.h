@@ -28,7 +28,8 @@ private:
     Ui::ComponentsManager *ui;
     QSqlTableModel *model;
     IDBManager *db;
-    unsigned int activeRow;
+
+    int activeRow;
 
     QString translateText(QString text);
 };

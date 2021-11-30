@@ -19,28 +19,27 @@ QSqlDatabase SQLiteDBManager::getDB()
     return db;
 }
 
-bool SQLiteDBManager::connectToDB()
+bool SQLiteDBManager::connectToDB(QString dbName)
 {
-    return openDB();
+    return openDB(dbName);
 }
 
 bool SQLiteDBManager::runScript(QString script)
 {
-    QSqlQuery tempQuery(db);
-    bool tempResult = tempQuery.exec(script);
-    if (!tempResult) {
-        qDebug() << tempQuery.lastError();
-        qDebug() << tempQuery.lastQuery();
-    }
-    return tempResult;
+    QSqlQuery tempQuery;
+    bool result = tempQuery.exec(script);
+    if (!result)
+        qDebug() << tempQuery.lastError() << Qt::endl << tempQuery.lastQuery() << Qt::endl;
+
+    return result;
 }
 
-bool SQLiteDBManager::openDB()
+bool SQLiteDBManager::openDB(QString dbName)
 {
     db = QSqlDatabase::addDatabase("QSQLITE");
     if (!QDir("db").exists())
         QDir().mkdir("db");
 
-    db.setDatabaseName("db//pc_constructor_db.sqlite");
+    db.setDatabaseName(QString("db//%1.sqlite").arg(dbName));
     return db.open();
 }

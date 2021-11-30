@@ -10,7 +10,7 @@ public:
     static SQLiteDBManager *getInstance();
 
     virtual QSqlDatabase getDB() override;
-    virtual bool connectToDB() override;
+    virtual bool connectToDB(QString dbName) override;
     virtual bool runScript(QString script) override;
 
 private:
@@ -19,7 +19,7 @@ private:
 
     SQLiteDBManager();
 
-    bool openDB();
+    bool openDB(QString dbName);
 };
 
 #endif // SQLITEDBMANAGER_H

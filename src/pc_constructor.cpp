@@ -1,6 +1,6 @@
 #include "pc_constructor.h"
 #include <QMessageBox>
-#include <QSqlTableModel>
+#include <QSqlQuery>
 #include <QTableView>
 #include "ui_pc_constructor.h"
 
@@ -16,10 +16,10 @@ PC_Constructor::PC_Constructor(QWidget *parent)
                   "name VARCHAR, "
                   "motherboard INTEGER, "
                   "cpu INTEGER, "
-                  "rom INTEGER, "
                   "ram INTEGER, "
-                  "supply INTEGER, "
+                  "rom INTEGER, "
                   "gpu INTEGER, "
+                  "powerSupply INTEGER, "
                   "price INTEGER, "
                   "UNIQUE(name)"
                   ")");
@@ -40,7 +40,7 @@ PC_Constructor::~PC_Constructor()
 
 void PC_Constructor::on_action_NewBuild_triggered()
 {
-    createBuildDialog.show();
+    createBuildDialog.exec();
 }
 
 void PC_Constructor::createBuild(QString buildName)
@@ -126,12 +126,12 @@ void PC_Constructor::setValidBuildMenuActions()
 
 void PC_Constructor::setTreeWidgetBuilds()
 {
-    QSqlTableModel tempBuildModel(this, db->getDB());
-    tempBuildModel.setTable("builds");
-    tempBuildModel.select();
-    for (int i = 0; i < tempBuildModel.rowCount(); i++) {
+    QSqlQuery tempQuery;
+
+    tempQuery.exec("SELECT name FROM builds");
+    while (tempQuery.next()) {
         QTreeWidgetItem *buildItem = new QTreeWidgetItem;
-        buildItem->setText(0, tempBuildModel.index(i, 1).data().toString());
+        buildItem->setText(0, tempQuery.value(0).toString());
         if (!buildItem->text(0).isEmpty())
             ui->treeWidget->addTopLevelItem(buildItem);
     }
@@ -142,13 +142,14 @@ void PC_Constructor::setTabWidgetBuilds()
     QWidget *tempTabWidget = new QWidget(this);
     QHBoxLayout *tabHBoxLayout = new QHBoxLayout(tempTabWidget);
     QSqlTableModel tempBuildModel(this, db->getDB());
-    tempBuildModel.setTable("builds");
-    tempBuildModel.select();
-    for (int i = 0; i < tempBuildModel.rowCount(); i++)
-        if (tempBuildModel.index(i, 1).data().toString() == activeBuildName)
-            tabHBoxLayout->addWidget(new ComponentsWidget(
-                                         tempBuildModel.index(i, 0).data().toUInt()),
+    QSqlQuery tempQuery;
+
+    tempQuery.exec("SELECT id, name FROM builds");
+    while (tempQuery.next())
+        if (tempQuery.value(1).toString() == activeBuildName)
+            tabHBoxLayout->addWidget(new ComponentsWidget(tempQuery.value(0).toUInt()),
                                      QSizePolicy::Ignored);
+
     tabHBoxLayout->addWidget(new SpecificationsWidget, QSizePolicy::Expanding);
     ui->tabWidget->addTab(tempTabWidget, activeBuildName);
     ui->tabWidget->setCurrentIndex(ui->tabWidget->count() - 1);
