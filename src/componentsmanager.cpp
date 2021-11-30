@@ -12,7 +12,7 @@ ComponentsManager::ComponentsManager(QWidget *parent)
     ui->setupUi(this);
 
     db->connectToDB();
-    db->runScript("CREATE TABLE __motherboard"
+    db->runScript("CREATE TABLE motherboard"
                   "("
                   "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                   "name VARCHAR NOT NULL, "
@@ -23,7 +23,7 @@ ComponentsManager::ComponentsManager(QWidget *parent)
                   "year INTEGER NOT NULL, "
                   "price INTEGER NOT NULL"
                   ")");
-    db->runScript("CREATE TABLE __cpu"
+    db->runScript("CREATE TABLE cpu"
                   "("
                   "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                   "name VARCHAR NOT NULL, "
@@ -34,7 +34,7 @@ ComponentsManager::ComponentsManager(QWidget *parent)
                   "cache INTEGER NOT NULL, "
                   "price INTEGER NOT NULL"
                   ")");
-    db->runScript("CREATE TABLE __rom"
+    db->runScript("CREATE TABLE rom"
                   "("
                   "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                   "name VARCHAR NOT NULL, "
@@ -45,7 +45,7 @@ ComponentsManager::ComponentsManager(QWidget *parent)
                   "writeSpeed INTEGER NOT NULL, "
                   "price INTEGER NOT NULL"
                   ")");
-    db->runScript("CREATE TABLE __ram"
+    db->runScript("CREATE TABLE ram"
                   "("
                   "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                   "name VARCHAR NOT NULL, "
@@ -54,7 +54,7 @@ ComponentsManager::ComponentsManager(QWidget *parent)
                   "space INTEGER NOT NULL, "
                   "price INTEGER NOT NULL"
                   ")");
-    db->runScript("CREATE TABLE __supply"
+    db->runScript("CREATE TABLE supply"
                   "("
                   "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                   "name VARCHAR NOT NULL, "
@@ -62,7 +62,7 @@ ComponentsManager::ComponentsManager(QWidget *parent)
                   "slots INTEGER NOT NULL, "
                   "price INTEGER NOT NULL"
                   ")");
-    db->runScript("CREATE TABLE __gpu"
+    db->runScript("CREATE TABLE gpu"
                   "("
                   "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                   "name VARCHAR NOT NULL, "
@@ -84,23 +84,23 @@ void ComponentsManager::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *compone
     model->setTable(translateText(component->text(0)));
     model->select();
     ui->tableView->setModel(model);
-    ui->tableView->setColumnHidden(0, true);
+    //ui->tableView->setColumnHidden(0, true);
 }
 
 QString ComponentsManager::translateText(QString text)
 {
     if (text == "Материнські плати")
-        return "__motherboard";
+        return "motherboard";
     if (text == "Процесори")
-        return "__cpu";
+        return "cpu";
     if (text == "Накопичувачі")
-        return "__rom";
+        return "rom";
     if (text == "Оперативна пам'ять")
-        return "__ram";
+        return "ram";
     if (text == "Блоки живлення")
-        return "__supply";
+        return "supply";
     if (text == "Відеокарти")
-        return "__gpu";
+        return "builds";
     return text;
 }
 
@@ -114,7 +114,7 @@ void ComponentsManager::on_tableView_clicked(const QModelIndex &index)
 
 void ComponentsManager::on_addComponentButton_clicked()
 {
-    model->insertRow(activeRow);
+    model->insertRow(model->rowCount());
 }
 
 void ComponentsManager::on_deleteComponentButton_clicked()

@@ -1,12 +1,16 @@
 #include "singlecomponentwidget.h"
 #include "ui_singlecomponentwidget.h"
 
-SingleComponentWidget::SingleComponentWidget(QString componentName, QWidget *parent)
+SingleComponentWidget::SingleComponentWidget(QString componentName,
+                                             unsigned int buildId,
+                                             QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::SingleComponentWidget)
     , db(SQLiteDBManager::getInstance())
+    , buildId(buildId)
 {
     ui->setupUi(this);
+
     if (componentName == "motherboard")
         ui->label->setText("Материнські плати");
     if (componentName == "cpu")
@@ -20,11 +24,24 @@ SingleComponentWidget::SingleComponentWidget(QString componentName, QWidget *par
     if (componentName == "gpu")
         ui->label->setText("Відеокарти");
 
-    model = new QSqlTableModel(this, db->getDB());
-    model->setTable("__" + componentName);
-    model->select();
-    for (int i = 0; i < model->rowCount(); i++)
-        ui->comboBox->addItem(model->index(i, 1).data().toString());
+    buildModel = new QSqlTableModel(this, db->getDB());
+    buildModel->setTable("builds");
+    buildModel->select();
+    activeComponentModel = new QSqlTableModel(this, db->getDB());
+    activeComponentModel->setTable(componentName);
+    activeComponentModel->select();
+    for (int i = 0; i < activeComponentModel->rowCount(); i++)
+        ui->comboBox->addItem(activeComponentModel->index(i, 1).data().toString());
+
+    connect(ui->comboBox, &QComboBox::activated, this, [this, componentName, buildId](int index) {
+        if (componentCompatibility(componentName))
+            db->runScript("UPDATE builds SET " + componentName + " = "
+                          + QString::number(activeComponentModel->index(index, 0).data().toUInt())
+                          + " WHERE id = " + QString::number(buildId));
+        else
+            ui->comboBox->setStyleSheet("background-color: rgb(122, 50, 50);"
+                                        "color: white");
+    });
 }
 
 SingleComponentWidget::~SingleComponentWidget()
@@ -36,4 +53,18 @@ SingleComponentWidget::~SingleComponentWidget()
 void SingleComponentWidget::on_pushButton_clicked()
 {
     delete this;
+}
+
+bool SingleComponentWidget::componentCompatibility(QString componentName)
+{
+    if (componentName == "cpu") {
+        compareComponentModel = new QSqlTableModel(this, db->getDB());
+        compareComponentModel->setTable("motherboard");
+        compareComponentModel->select();
+        unsigned int motherBoardId = buildModel->index(buildId, 2).data().toUInt();
+        qDebug() << "motherboard: "
+                        + compareComponentModel->index(motherBoardId, 1).data().toString();
+        return true;
+    }
+    return true;
 }

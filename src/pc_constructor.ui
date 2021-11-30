@@ -119,6 +119,9 @@
    <property name="text">
     <string>Запустити менеджер компонентів...</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+M</string>
+   </property>
   </action>
   <action name="actionSaveBuild">
    <property name="enabled">

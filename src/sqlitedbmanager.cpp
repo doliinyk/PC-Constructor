@@ -1,5 +1,6 @@
 #include "sqlitedbmanager.h"
 #include <QDir>
+#include <QSqlError>
 #include <QSqlQuery>
 
 SQLiteDBManager *SQLiteDBManager::instance = nullptr;
@@ -10,7 +11,7 @@ SQLiteDBManager::~SQLiteDBManager() {}
 
 SQLiteDBManager *SQLiteDBManager::getInstance()
 {
-    return instance ?: instance = new SQLiteDBManager;
+    return (instance ?: instance = new SQLiteDBManager);
 }
 
 QSqlDatabase SQLiteDBManager::getDB()
@@ -25,18 +26,14 @@ bool SQLiteDBManager::connectToDB()
 
 bool SQLiteDBManager::runScript(QString script)
 {
-    return QSqlQuery(db).exec(script);
+    QSqlQuery tempQuery(db);
+    bool tempResult = tempQuery.exec(script);
+    if (!tempResult) {
+        qDebug() << tempQuery.lastError();
+        qDebug() << tempQuery.lastQuery();
+    }
+    return tempResult;
 }
-
-//QStringList SQLiteDBManager::getTableNames()
-//{
-//    QStringList tempTablesNames = db.tables();
-//    for (int i = tempTablesNames.size() - 1; i >= 0; i--)
-//        if (tempTablesNames[i].startsWith("sqlite_") || tempTablesNames[i].startsWith("__"))
-//            tempTablesNames.erase(tempTablesNames.constBegin() + i);
-
-//    return tempTablesNames;
-//}
 
 bool SQLiteDBManager::openDB()
 {

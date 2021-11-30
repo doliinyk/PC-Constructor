@@ -2,10 +2,11 @@
 #include "singlecomponentwidget.h"
 #include "ui_componentswidget.h"
 
-ComponentsWidget::ComponentsWidget(QWidget *parent)
+ComponentsWidget::ComponentsWidget(unsigned int buildId, QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::ComponentsWidget)
     , componentList({"motherboard", "cpu", "rom", "ram", "supply", "gpu"})
+    , buildId(buildId)
 {
     ui->setupUi(this);
 }
@@ -18,7 +19,7 @@ ComponentsWidget::~ComponentsWidget()
 void ComponentsWidget::on_addComponentButton_clicked()
 {
     if (!componentList.empty()) {
-        ui->gridLayout->addWidget(new SingleComponentWidget(componentList[0]));
+        ui->gridLayout->addWidget(new SingleComponentWidget(componentList[0], buildId));
         componentList.erase(componentList.constBegin());
     } else
         ui->frame->hide();

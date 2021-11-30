@@ -12,7 +12,7 @@ class ComponentsWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit ComponentsWidget(QWidget *parent = nullptr);
+    explicit ComponentsWidget(unsigned int buildId, QWidget *parent = nullptr);
     ~ComponentsWidget();
 
 private slots:
@@ -20,7 +20,9 @@ private slots:
 
 private:
     Ui::ComponentsWidget *ui;
+
     QStringList componentList;
+    unsigned int buildId;
 };
 
 #endif // COMPONENTSWIDGET_H

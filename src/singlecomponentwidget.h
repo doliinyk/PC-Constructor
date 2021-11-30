@@ -14,7 +14,9 @@ class SingleComponentWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit SingleComponentWidget(QString, QWidget *parent = nullptr);
+    explicit SingleComponentWidget(QString componentName,
+                                   unsigned int buildId,
+                                   QWidget *parent = nullptr);
     ~SingleComponentWidget();
 
 private slots:
@@ -23,7 +25,13 @@ private slots:
 private:
     Ui::SingleComponentWidget *ui;
     IDBManager *db;
-    QSqlTableModel *model;
+    QSqlTableModel *buildModel;
+    QSqlTableModel *activeComponentModel;
+    QSqlTableModel *compareComponentModel;
+
+    unsigned int buildId;
+
+    bool componentCompatibility(QString componentName);
 };
 
 #endif // SINGLECOMPONENTWIDGET_H

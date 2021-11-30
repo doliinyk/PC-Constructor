@@ -10,7 +10,7 @@ PC_Constructor::PC_Constructor(QWidget *parent)
     , db(SQLiteDBManager::getInstance())
 {
     ui->setupUi(this);
-    db->runScript("CREATE TABLE __builds"
+    db->runScript("CREATE TABLE builds"
                   "("
                   "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                   "name VARCHAR, "
@@ -46,7 +46,7 @@ void PC_Constructor::on_action_NewBuild_triggered()
 void PC_Constructor::createBuild(QString buildName)
 {
     if (buildName.isEmpty()
-        || !db->runScript(("INSERT INTO __builds(name) VALUES('" + buildName + "')")))
+        || !db->runScript(("INSERT INTO builds(name) VALUES('" + buildName + "')")))
         return;
 
     activeBuildName = buildName;
@@ -66,7 +66,7 @@ void PC_Constructor::on_actionDeleteBuild_triggered()
                              "Ви точно хочете видалити збірку " + activeBuildName + "?",
                              QMessageBox::Ok | QMessageBox::Cancel)
             != QMessageBox::Ok
-        || !db->runScript("DELETE FROM __builds WHERE name LIKE '" + activeBuildName + "'"))
+        || !db->runScript("DELETE FROM builds WHERE name LIKE '" + activeBuildName + "'"))
         return;
 
     activeBuildName.clear();
@@ -127,12 +127,13 @@ void PC_Constructor::setValidBuildMenuActions()
 void PC_Constructor::setTreeWidgetBuilds()
 {
     QSqlTableModel tempBuildModel(this, db->getDB());
-    tempBuildModel.setTable("__builds");
+    tempBuildModel.setTable("builds");
     tempBuildModel.select();
     for (int i = 0; i < tempBuildModel.rowCount(); i++) {
         QTreeWidgetItem *buildItem = new QTreeWidgetItem;
         buildItem->setText(0, tempBuildModel.index(i, 1).data().toString());
-        ui->treeWidget->addTopLevelItem(buildItem);
+        if (!buildItem->text(0).isEmpty())
+            ui->treeWidget->addTopLevelItem(buildItem);
     }
 }
 
@@ -140,7 +141,14 @@ void PC_Constructor::setTabWidgetBuilds()
 {
     QWidget *tempTabWidget = new QWidget(this);
     QHBoxLayout *tabHBoxLayout = new QHBoxLayout(tempTabWidget);
-    tabHBoxLayout->addWidget(new ComponentsWidget, QSizePolicy::Ignored);
+    QSqlTableModel tempBuildModel(this, db->getDB());
+    tempBuildModel.setTable("builds");
+    tempBuildModel.select();
+    for (int i = 0; i < tempBuildModel.rowCount(); i++)
+        if (tempBuildModel.index(i, 1).data().toString() == activeBuildName)
+            tabHBoxLayout->addWidget(new ComponentsWidget(
+                                         tempBuildModel.index(i, 0).data().toUInt()),
+                                     QSizePolicy::Ignored);
     tabHBoxLayout->addWidget(new SpecificationsWidget, QSizePolicy::Expanding);
     ui->tabWidget->addTab(tempTabWidget, activeBuildName);
     ui->tabWidget->setCurrentIndex(ui->tabWidget->count() - 1);
