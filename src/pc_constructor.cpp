@@ -18,7 +18,9 @@ PC_Constructor::PC_Constructor(QWidget *parent)
                   "cpu INTEGER, "
                   "ram INTEGER, "
                   "rom INTEGER, "
+                  "rom2 INTEGER, "
                   "gpu INTEGER, "
+                  "gpu2 INTEGER, "
                   "powerSupply INTEGER, "
                   "price INTEGER, "
                   "UNIQUE(name)"
@@ -153,4 +155,9 @@ void PC_Constructor::setTabWidgetBuilds()
     tabHBoxLayout->addWidget(new SpecificationsWidget, QSizePolicy::Expanding);
     ui->tabWidget->addTab(tempTabWidget, activeBuildName);
     ui->tabWidget->setCurrentIndex(ui->tabWidget->count() - 1);
+}
+
+void PC_Constructor::on_tabWidget_tabCloseRequested(int index)
+{
+    ui->tabWidget->removeTab(index);
 }

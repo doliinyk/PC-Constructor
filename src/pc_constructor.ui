@@ -56,6 +56,12 @@
         <property name="currentIndex">
          <number>-1</number>
         </property>
+        <property name="tabsClosable">
+         <bool>true</bool>
+        </property>
+        <property name="movable">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
       <item row="0" column="0">
@@ -94,7 +100,6 @@
     <property name="title">
      <string>Збірка</string>
     </property>
-    <addaction name="actionSaveBuild"/>
     <addaction name="actionDeleteBuild"/>
     <addaction name="separator"/>
     <addaction name="action_NewBuild"/>
@@ -121,17 +126,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+M</string>
-   </property>
-  </action>
-  <action name="actionSaveBuild">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Зберегти...</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+S</string>
    </property>
   </action>
   <action name="actionDeleteBuild">

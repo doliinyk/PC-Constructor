@@ -32,6 +32,8 @@ private slots:
     void on_actionOpenComponentsManager_triggered();
     void on_actionAbout_triggered();
 
+    void on_tabWidget_tabCloseRequested(int index);
+
 private:
     Ui::PC_Constructor *ui;
     IDBManager *db;

@@ -33,7 +33,7 @@ ComponentsManager::ComponentsManager(QWidget *parent)
                   "cache INTEGER NOT NULL, "
                   "socket VARCHAR NOT NULL, "
                   "power INTEGER NOT NULL, "
-                  "price INTEGER NOT NULL"
+                  "price INTEGER NOT NULL, "
                   "UNIQUE(name)"
                   ")");
     db->runScript("CREATE TABLE ram"
@@ -44,7 +44,7 @@ ComponentsManager::ComponentsManager(QWidget *parent)
                   "frequency INTEGER NOT NULL, "
                   "ramType VARCHAR NOT NULL, "
                   "power INTEGER NOT NULL, "
-                  "price INTEGER NOT NULL"
+                  "price INTEGER NOT NULL, "
                   "UNIQUE(name)"
                   ")");
     db->runScript("CREATE TABLE rom"
@@ -56,7 +56,7 @@ ComponentsManager::ComponentsManager(QWidget *parent)
                   "readSpeed INTEGER NOT NULL, "
                   "writeSpeed INTEGER NOT NULL, "
                   "romInterface VARCHAR NOT NULL, "
-                  "price INTEGER NOT NULL"
+                  "price INTEGER NOT NULL, "
                   "UNIQUE(name)"
                   ")");
     db->runScript("CREATE TABLE gpu"
@@ -66,7 +66,7 @@ ComponentsManager::ComponentsManager(QWidget *parent)
                   "storage INTEGER NOT NULL, "
                   "frequency INTEGER NOT NULL, "
                   "power INTEGER NOT NULL, "
-                  "price INTEGER NOT NULL"
+                  "price INTEGER NOT NULL, "
                   "UNIQUE(name)"
                   ")");
     db->runScript("CREATE TABLE powerSupply"
@@ -74,7 +74,7 @@ ComponentsManager::ComponentsManager(QWidget *parent)
                   "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                   "name VARCHAR NOT NULL, "
                   "power INTEGER NOT NULL, "
-                  "price INTEGER NOT NULL"
+                  "price INTEGER NOT NULL, "
                   "UNIQUE(name)"
                   ")");
 }

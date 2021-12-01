@@ -15,7 +15,10 @@ class SingleComponentWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit SingleComponentWidget(QString componentName, int buildId, QWidget *parent = nullptr);
+    explicit SingleComponentWidget(QString componentName,
+                                   int buildId,
+                                   bool isRestored,
+                                   QWidget *parent = nullptr);
     ~SingleComponentWidget();
 
 signals:
@@ -33,9 +36,10 @@ private:
     QString componentName;
     QSqlQuery query;
 
-    bool componentCompatibility(QString componentName);
+    void componentCompatibility(QString componentName);
     int findIdByName(QString tableName, QString componentName);
     bool compatibilityQuery(QString componentName, QString compareName);
+    QString checkSecondComponent(QString componentName);
 };
 
 #endif // SINGLECOMPONENTWIDGET_H
