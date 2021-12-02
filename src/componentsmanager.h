@@ -18,6 +18,8 @@ public:
     explicit ComponentsManager(QWidget *parent = nullptr);
     ~ComponentsManager();
 
+    static QString translateTextToComponent(QString text);
+
 private slots:
     void on_treeWidget_itemDoubleClicked(QTreeWidgetItem *component);
     void on_tableView_clicked(const QModelIndex &index);
@@ -30,8 +32,6 @@ private:
     IDBManager *db;
 
     int activeRow;
-
-    QString translateText(QString text);
 };
 
 #endif // COMPONENTSMANAGER_H

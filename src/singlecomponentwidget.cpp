@@ -1,7 +1,7 @@
-#include "singlecomponentwidget.h"
+﻿#include "singlecomponentwidget.h"
 #include "ui_singlecomponentwidget.h"
 
-SingleComponentWidget::SingleComponentWidget(QString componentName,
+SingleComponentWidget::SingleComponentWidget(QString componentType,
                                              int buildId,
                                              bool isRestored,
                                              QWidget *parent)
@@ -10,49 +10,24 @@ SingleComponentWidget::SingleComponentWidget(QString componentName,
     , db(SQLiteDBManager::getInstance())
     , buildId(buildId)
     , componentId(0)
-    , componentName(componentName)
+    , componentType(componentType)
     , query(db->getDB())
 {
     ui->setupUi(this);
 
-    if (componentName == "motherboard")
-        ui->label->setText("Материнська плата");
-    if (componentName == "cpu")
-        ui->label->setText("Процесор");
-    if (componentName == "ram")
-        ui->label->setText("Оперативна пам'ять");
-    if (componentName.startsWith("rom"))
-        ui->label->setText("Накопичувач");
-    if (componentName.startsWith("gpu"))
-        ui->label->setText("Відеокарта");
-    if (componentName == "powerSupply")
-        ui->label->setText("Блок живлення");
+    ui->label->setText(translateComponentToText(componentType));
 
-    query.exec("SELECT name FROM " + checkSecondComponent(componentName));
+    query.exec(QString("SELECT name FROM %1").arg(isComponentTypeSecond(componentType)));
     while (query.next())
-        ui->comboBox->addItem(query.value(0).toString());
+        ui->componentBox->addItem(query.value(0).toString());
 
     if (isRestored) {
-        int tempIndex;
-        query.exec(QString("SELECT id, %1 FROM builds").arg(componentName));
-        while (query.next())
-            if (query.value(0) == buildId)
-                tempIndex = query.value(1).toInt();
+        query.exec(QString("SELECT %1 FROM builds WHERE id = %2").arg(componentType).arg(buildId));
+        query.next();
 
-        ui->comboBox->setCurrentIndex(tempIndex - 1);
-        qDebug() << QString("%1: %2").arg(componentName).arg(tempIndex);
-
-        componentCompatibility(componentName);
+        componentId = query.value(0).toInt();
+        ui->componentBox->setCurrentIndex(query.value(0).toInt() - 1);
     }
-
-    connect(ui->comboBox, &QComboBox::activated, this, [this](int index) {
-        componentId = findIdByName(this->componentName, ui->comboBox->itemText(index));
-
-        query.exec("UPDATE builds SET " + this->componentName + " = " + QString::number(componentId)
-                   + " WHERE id = " + QString::number(this->buildId));
-
-        componentCompatibility(this->componentName);
-    });
 }
 
 SingleComponentWidget::~SingleComponentWidget()
@@ -60,99 +35,61 @@ SingleComponentWidget::~SingleComponentWidget()
     delete ui;
 }
 
-void SingleComponentWidget::on_pushButton_clicked()
+void SingleComponentWidget::setComboBoxColor(bool value)
 {
-    emit componentDeleted(componentName);
+    ui->componentBox->setStyleSheet(QString("color: %1").arg(value ? "black" : "darkred"));
 }
 
-void SingleComponentWidget::componentCompatibility(QString componentName)
+QString SingleComponentWidget::isComponentTypeSecond(QString componentType)
 {
-    bool result = false;
-
-    if (componentName == "motherboard")
-        result = true;
-    else if (componentName == "cpu")
-        result = compatibilityQuery(componentName, "socket");
-    else if (componentName == "ram")
-        result = compatibilityQuery(componentName, "ramType");
-    else if (componentName.startsWith("rom"))
-        result = compatibilityQuery(checkSecondComponent(componentName), "romInterface");
-    else if (componentName.startsWith("gpu"))
-        result = true;
-    else if (componentName == "powerSupply") {
-        int powerSum = 20;
-        int ids[4] = {};
-
-        query.exec("SELECT id, cpu, ram, gpu, gpu2 FROM builds");
-        while (query.next())
-            if (query.value(0).toInt() == buildId)
-                for (int i = 0; i < 4; i++)
-                    ids[i] = query.value(i + 1).toInt();
-
-        query.exec("SELECT id, power FROM cpu");
-        while (query.next())
-            if (query.value(0).toInt() == ids[0])
-                powerSum += query.value(1).toInt();
-
-        query.exec("SELECT id, power FROM ram");
-        while (query.next())
-            if (query.value(0).toInt() == ids[1])
-                powerSum += query.value(1).toInt();
-
-        query.exec("SELECT id, power FROM gpu");
-        while (query.next())
-            if (query.value(0).toInt() == ids[2])
-                powerSum += query.value(1).toInt();
-
-        query.exec("SELECT id, power FROM gpu");
-        while (query.next())
-            if (query.value(0).toInt() == ids[3])
-                powerSum += query.value(1).toInt();
-
-        query.exec("SELECT id, power FROM powerSupply");
-        while (query.next())
-            if (query.value(0).toInt() == componentId && query.value(1).toInt() > powerSum)
-                result = true;
-    }
-
-    ui->comboBox->setStyleSheet(QString("color: %1").arg(result ? "black" : "darkred"));
+    return (componentType.endsWith("2") ? componentType.left(componentType.length() - 1)
+                                        : componentType);
 }
 
-int SingleComponentWidget::findIdByName(QString tableName, QString componentName)
+QString SingleComponentWidget::translateComponentToText(QString componentType)
 {
-    query.exec(QString("SELECT id, name FROM %1").arg(checkSecondComponent(tableName)));
-    while (query.next())
-        if (query.value(1).toString() == componentName)
-            return query.value(0).toUInt();
-
-    return 0;
+    if (componentType == "motherboard")
+        return "Материнська плата";
+    if (componentType == "cpu")
+        return "Процесор";
+    if (componentType == "ram")
+        return "Оперативна пам`ять";
+    if (componentType.startsWith("rom"))
+        return "Накопичувач";
+    if (componentType.startsWith("gpu"))
+        return "Відеокарта";
+    if (componentType == "powerSupply")
+        return "Блок живлення";
+    return componentType;
 }
 
-bool SingleComponentWidget::compatibilityQuery(QString componentName, QString compareName)
+void SingleComponentWidget::emitSignalAfterRestore()
 {
-    int motherboardIndex = 0;
-    QString compareResultName;
-
-    query.exec("SELECT id, motherboard FROM builds");
-    while (query.next())
-        if (query.value(0).toInt() == buildId)
-            motherboardIndex = query.value(1).toInt();
-
-    query.exec(QString("SELECT id, %1 FROM motherboard").arg(compareName));
-    while (query.next())
-        if (query.value(0).toInt() == motherboardIndex)
-            compareResultName = query.value(1).toString();
-
-    query.exec(QString("SELECT id, %1 FROM %2").arg(compareName).arg(componentName));
-    while (query.next())
-        if (query.value(0).toInt() == componentId && query.value(1).toString() == compareResultName)
-            return true;
-
-    return false;
+    emit componentChoosed(componentType, componentId, this);
 }
 
-QString SingleComponentWidget::checkSecondComponent(QString componentName)
+void SingleComponentWidget::on_componentBox_activated(int index)
 {
-    return (componentName.endsWith("2") ? componentName.left(componentName.length() - 1)
-                                        : componentName);
+    componentId = findIdByName(componentType, ui->componentBox->itemText(index));
+
+    query.exec(QString("UPDATE builds SET %1 = %2 WHERE id = %3")
+                   .arg(componentType)
+                   .arg(componentId)
+                   .arg(buildId));
+
+    emit componentChoosed(componentType, componentId, this);
+}
+
+void SingleComponentWidget::on_deleteButton_clicked()
+{
+    emit componentDeleted(componentType);
+}
+
+int SingleComponentWidget::findIdByName(QString componentType, QString componentName)
+{
+    query.exec(QString("SELECT id FROM %1 WHERE name LIKE '%2'")
+                   .arg(isComponentTypeSecond(componentType), componentName));
+    query.next();
+
+    return query.value(0).toInt();
 }

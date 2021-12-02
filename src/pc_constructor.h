@@ -2,11 +2,10 @@
 #define PC_CONSTRUCTOR_H
 
 #include <QMainWindow>
+#include <QSqlQuery>
 #include <QTreeWidget>
 #include "componentsmanager.h"
-#include "componentswidget.h"
 #include "createbuilddialog.h"
-#include "specificationswidget.h"
 #include "sqlitedbmanager.h"
 
 QT_BEGIN_NAMESPACE
@@ -31,7 +30,6 @@ private slots:
     void on_treeWidget_itemDoubleClicked(QTreeWidgetItem *build);
     void on_actionOpenComponentsManager_triggered();
     void on_actionAbout_triggered();
-
     void on_tabWidget_tabCloseRequested(int index);
 
 private:
@@ -39,12 +37,14 @@ private:
     IDBManager *db;
 
     QString activeBuildName;
+    QSqlQuery query;
     CreateBuildDialog createBuildDialog;
     ComponentsManager componentsManager;
 
-    void setValidBuildMenuActions();
+    void setBuildMenuBar();
     void setTreeWidgetBuilds();
     void setTabWidgetBuilds();
+    void setStatusBar();
 };
 
 #endif // PC_CONSTRUCTOR_H

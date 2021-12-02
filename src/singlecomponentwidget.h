@@ -15,17 +15,26 @@ class SingleComponentWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit SingleComponentWidget(QString componentName,
+    explicit SingleComponentWidget(QString componentType,
                                    int buildId,
                                    bool isRestored,
                                    QWidget *parent = nullptr);
     ~SingleComponentWidget();
 
+    void setComboBoxColor(bool value);
+    static QString isComponentTypeSecond(QString componentType);
+    static QString translateComponentToText(QString componentType);
+    void emitSignalAfterRestore();
+
 signals:
-    void componentDeleted(QString componentName);
+    void componentChoosed(QString componentType,
+                          int componentId,
+                          SingleComponentWidget *singleComponentWidget);
+    void componentDeleted(QString componentType);
 
 private slots:
-    void on_pushButton_clicked();
+    void on_componentBox_activated(int index);
+    void on_deleteButton_clicked();
 
 private:
     Ui::SingleComponentWidget *ui;
@@ -33,13 +42,10 @@ private:
 
     int buildId;
     int componentId;
-    QString componentName;
+    QString componentType;
     QSqlQuery query;
 
-    void componentCompatibility(QString componentName);
-    int findIdByName(QString tableName, QString componentName);
-    bool compatibilityQuery(QString componentName, QString compareName);
-    QString checkSecondComponent(QString componentName);
+    int findIdByName(QString componentType, QString componentName);
 };
 
 #endif // SINGLECOMPONENTWIDGET_H

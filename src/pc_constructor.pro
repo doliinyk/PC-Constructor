@@ -12,7 +12,6 @@ SOURCES += \
     componentsmanager.cpp \
     componentswidget.cpp \
     createbuilddialog.cpp \
-    createcomponentdialog.cpp \
     idbmanager.cpp \
     main.cpp \
     pc_constructor.cpp \
@@ -24,7 +23,6 @@ HEADERS += \
     componentsmanager.h \
     componentswidget.h \
     createbuilddialog.h \
-    createcomponentdialog.h \
     idbmanager.h \
     pc_constructor.h \
     singlecomponentwidget.h \
@@ -35,7 +33,6 @@ FORMS += \
     componentsmanager.ui \
     componentswidget.ui \
     createbuilddialog.ui \
-    createcomponentdialog.ui \
     pc_constructor.ui \
     singlecomponentwidget.ui \
     specificationswidget.ui

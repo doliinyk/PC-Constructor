@@ -19,7 +19,8 @@ ComponentsManager::ComponentsManager(QWidget *parent)
                   "socket VARCHAR NOT NULL, "
                   "ramType VARCHAR NOT NULL, "
                   "romInterface VARCHAR NOT NULL, "
-                  "price INTEGER NOT NULL,"
+                  "price INTEGER NOT NULL, "
+                  "photo VARCHAR NOT NULL, "
                   "UNIQUE(name)"
                   ")");
     db->runScript("CREATE TABLE cpu"
@@ -34,6 +35,7 @@ ComponentsManager::ComponentsManager(QWidget *parent)
                   "socket VARCHAR NOT NULL, "
                   "power INTEGER NOT NULL, "
                   "price INTEGER NOT NULL, "
+                  "photo VARCHAR NOT NULL, "
                   "UNIQUE(name)"
                   ")");
     db->runScript("CREATE TABLE ram"
@@ -45,6 +47,7 @@ ComponentsManager::ComponentsManager(QWidget *parent)
                   "ramType VARCHAR NOT NULL, "
                   "power INTEGER NOT NULL, "
                   "price INTEGER NOT NULL, "
+                  "photo VARCHAR NOT NULL, "
                   "UNIQUE(name)"
                   ")");
     db->runScript("CREATE TABLE rom"
@@ -57,6 +60,7 @@ ComponentsManager::ComponentsManager(QWidget *parent)
                   "writeSpeed INTEGER NOT NULL, "
                   "romInterface VARCHAR NOT NULL, "
                   "price INTEGER NOT NULL, "
+                  "photo VARCHAR NOT NULL, "
                   "UNIQUE(name)"
                   ")");
     db->runScript("CREATE TABLE gpu"
@@ -67,6 +71,7 @@ ComponentsManager::ComponentsManager(QWidget *parent)
                   "frequency INTEGER NOT NULL, "
                   "power INTEGER NOT NULL, "
                   "price INTEGER NOT NULL, "
+                  "photo VARCHAR NOT NULL, "
                   "UNIQUE(name)"
                   ")");
     db->runScript("CREATE TABLE powerSupply"
@@ -75,6 +80,7 @@ ComponentsManager::ComponentsManager(QWidget *parent)
                   "name VARCHAR NOT NULL, "
                   "power INTEGER NOT NULL, "
                   "price INTEGER NOT NULL, "
+                  "photo VARCHAR NOT NULL, "
                   "UNIQUE(name)"
                   ")");
 }
@@ -84,33 +90,33 @@ ComponentsManager::~ComponentsManager()
     delete ui;
 }
 
-void ComponentsManager::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *component)
-{
-    ui->labelComponent->setText(component->text(0));
-
-    model = new QSqlTableModel(this, db->getDB());
-    model->setTable(translateText(component->text(0)));
-    model->select();
-
-    ui->tableView->setModel(model);
-    ui->tableView->setColumnHidden(0, true);
-}
-
-QString ComponentsManager::translateText(QString text)
+QString ComponentsManager::translateTextToComponent(QString text)
 {
     if (text == "Материнські плати")
         return "motherboard";
     if (text == "Процесори")
         return "cpu";
-    if (text == "Оперативна пам'ять")
+    if (text == "Оперативна пам`ять")
         return "ram";
     if (text == "Накопичувачі")
         return "rom";
     if (text == "Відеокарти")
         return "gpu";
     if (text == "Блоки живлення")
-        return "powerSupply";
+        return "builds";
     return text;
+}
+
+void ComponentsManager::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *component)
+{
+    ui->labelComponent->setText(component->text(0));
+
+    model = new QSqlTableModel(this, db->getDB());
+    model->setTable(translateTextToComponent(component->text(0)));
+    model->select();
+
+    ui->tableView->setModel(model);
+    ui->tableView->setColumnHidden(0, true);
 }
 
 void ComponentsManager::on_tableView_clicked(const QModelIndex &index)

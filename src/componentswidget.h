@@ -3,6 +3,7 @@
 
 #include <QSqlQuery>
 #include <QWidget>
+#include "singlecomponentwidget.h"
 #include "sqlitedbmanager.h"
 
 namespace Ui {
@@ -17,6 +18,11 @@ public:
     explicit ComponentsWidget(int buildId, QWidget *parent = nullptr);
     ~ComponentsWidget();
 
+    void emitSignalAfterRestore();
+
+signals:
+    void componentConflict(QStringList componentTypes);
+
 private slots:
     void on_addComponentButton_clicked();
 
@@ -25,11 +31,17 @@ private:
     IDBManager *db;
 
     QSqlQuery query;
-    QStringList componentList;
+    QStringList componentTypeList;
+    QStringList conflictList;
     int buildId;
+    bool isRestored;
 
     void restoreComponents();
-    void createComponent(int step = 0, bool isRestored = false);
+    void createComponent(int index = 0, bool isRestored = false);
+    void checkCompatibility(QString componentType,
+                            int componentId,
+                            SingleComponentWidget *singleComponentWidget);
+    bool compatibilityQuery(QString componentType, QString compareField, int componentId);
 };
 
 #endif // COMPONENTSWIDGET_H
