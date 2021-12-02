@@ -1,18 +1,16 @@
 #include "componentswidget.h"
+#include <QSqlQuery>
 #include "ui_componentswidget.h"
 
 ComponentsWidget::ComponentsWidget(int buildId, QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::ComponentsWidget)
     , db(SQLiteDBManager::getInstance())
-    , query(db->getDB())
     , componentTypeList({"motherboard", "cpu", "ram", "rom", "rom2", "gpu", "gpu2", "powerSupply"})
     , buildId(buildId)
     , isRestored(false)
 {
     ui->setupUi(this);
-
-    restoreComponents();
 }
 
 ComponentsWidget::~ComponentsWidget()
@@ -20,18 +18,9 @@ ComponentsWidget::~ComponentsWidget()
     delete ui;
 }
 
-void ComponentsWidget::emitSignalAfterRestore()
+void ComponentsWidget::createWidget()
 {
-    emit componentConflict(conflictList);
-}
-
-void ComponentsWidget::on_addComponentButton_clicked()
-{
-    createComponent();
-}
-
-void ComponentsWidget::restoreComponents()
-{
+    QSqlQuery query(db->getDB());
     query.exec(QString("SELECT * FROM builds WHERE id = %1").arg(buildId));
     query.next();
 
@@ -45,6 +34,11 @@ void ComponentsWidget::restoreComponents()
     }
 }
 
+void ComponentsWidget::on_addComponentButton_clicked()
+{
+    createComponent();
+}
+
 void ComponentsWidget::createComponent(int index, bool isRestored)
 {
     this->isRestored = isRestored;
@@ -54,12 +48,6 @@ void ComponentsWidget::createComponent(int index, bool isRestored)
 
     SingleComponentWidget *singleComponentWidget
         = new SingleComponentWidget(componentTypeList[index], buildId, isRestored);
-    ui->gridLayout->addWidget(singleComponentWidget);
-
-    componentTypeList.erase(componentTypeList.constBegin() + index);
-    if (componentTypeList.empty())
-        ui->frame->hide();
-
     connect(singleComponentWidget,
             &SingleComponentWidget::componentChoosed,
             this,
@@ -81,13 +69,18 @@ void ComponentsWidget::createComponent(int index, bool isRestored)
                     if (componentName == conflictList[i])
                         conflictList.erase(conflictList.constBegin() + i);
 
-                emit componentConflict(conflictList);
+                emit conflictResult(conflictList);
 
                 delete singleComponentWidget;
             });
 
-    if (isRestored)
-        singleComponentWidget->emitSignalAfterRestore();
+    singleComponentWidget->createWidget();
+
+    ui->gridLayout->addWidget(singleComponentWidget);
+
+    componentTypeList.erase(componentTypeList.constBegin() + index);
+    if (componentTypeList.empty())
+        ui->frame->hide();
 }
 
 void ComponentsWidget::checkCompatibility(QString componentType,
@@ -109,6 +102,7 @@ void ComponentsWidget::checkCompatibility(QString componentType,
         result = true;
     else if (componentType == "powerSupply") {
         int generalPower = 20;
+        QSqlQuery query(db->getDB());
 
         query.exec(QString("SELECT cpu, ram, gpu, gpu2 FROM builds WHERE id = %1").arg(buildId));
         query.next();
@@ -135,7 +129,7 @@ void ComponentsWidget::checkCompatibility(QString componentType,
     }
 
     singleComponentWidget->setComboBoxColor(result);
-    ////////////////////////tut
+
     conflictList.clear();
     if (!result) {
         if (componentType == "cpu" || componentType == "ram" || componentType == "rom") {
@@ -145,20 +139,20 @@ void ComponentsWidget::checkCompatibility(QString componentType,
             conflictList.push_back(componentType);
             for (int i = 0; i < 4; i++) {
                 if (!idList[i])
-                    conflictList.push_back(
-                        (i == 0 ? "cpu"
-                                : (i == 1 ? "ram" : (i == 2 ? "gpu" : (i == 3 ? "gpu2" : "")))));
+                    conflictList.push_back((
+                        !i ? "cpu" : (i == 1 ? "ram" : (i == 2 ? "gpu" : (i == 3 ? "gpu2" : "")))));
             }
         }
     }
 
-    emit componentConflict(conflictList);
+    emit conflictResult(conflictList);
 }
 
 bool ComponentsWidget::compatibilityQuery(QString componentType,
                                           QString compareField,
                                           int componentId)
 {
+    QSqlQuery query(db->getDB());
     query.exec(QString("SELECT motherboard FROM builds WHERE id = %1").arg(buildId));
     query.next();
     int motherboardIndex = query.value(0).toInt();

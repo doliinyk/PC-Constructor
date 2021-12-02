@@ -2,7 +2,6 @@
 #define PC_CONSTRUCTOR_H
 
 #include <QMainWindow>
-#include <QSqlQuery>
 #include <QTreeWidget>
 #include "componentsmanager.h"
 #include "createbuilddialog.h"
@@ -37,7 +36,6 @@ private:
     IDBManager *db;
 
     QString activeBuildName;
-    QSqlQuery query;
     CreateBuildDialog createBuildDialog;
     ComponentsManager componentsManager;
 

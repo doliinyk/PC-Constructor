@@ -1,7 +1,6 @@
 #ifndef COMPONENTSWIDGET_H
 #define COMPONENTSWIDGET_H
 
-#include <QSqlQuery>
 #include <QWidget>
 #include "singlecomponentwidget.h"
 #include "sqlitedbmanager.h"
@@ -18,10 +17,10 @@ public:
     explicit ComponentsWidget(int buildId, QWidget *parent = nullptr);
     ~ComponentsWidget();
 
-    void emitSignalAfterRestore();
+    void createWidget();
 
 signals:
-    void componentConflict(QStringList componentTypes);
+    void conflictResult(QStringList componentTypes);
 
 private slots:
     void on_addComponentButton_clicked();
@@ -30,13 +29,11 @@ private:
     Ui::ComponentsWidget *ui;
     IDBManager *db;
 
-    QSqlQuery query;
     QStringList componentTypeList;
     QStringList conflictList;
     int buildId;
     bool isRestored;
 
-    void restoreComponents();
     void createComponent(int index = 0, bool isRestored = false);
     void checkCompatibility(QString componentType,
                             int componentId,

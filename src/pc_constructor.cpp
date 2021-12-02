@@ -1,5 +1,6 @@
 #include "pc_constructor.h"
 #include <QMessageBox>
+#include <QSqlQuery>
 #include <QTableView>
 #include "componentswidget.h"
 #include "singlecomponentwidget.h"
@@ -12,8 +13,6 @@ PC_Constructor::PC_Constructor(QWidget *parent)
     , db(SQLiteDBManager::getInstance())
 {
     ui->setupUi(this);
-
-    query = QSqlQuery(db->getDB());
 
     db->runScript("CREATE TABLE builds"
                   "("
@@ -94,6 +93,7 @@ void PC_Constructor::on_tabWidget_tabBarClicked(int index)
         return;
 
     activeBuildName = ui->tabWidget->tabText(index);
+
     setStatusBar();
     setBuildMenuBar();
     setStatusBar();
@@ -142,6 +142,8 @@ void PC_Constructor::setBuildMenuBar()
 
 void PC_Constructor::setTreeWidgetBuilds()
 {
+    QSqlQuery query(db->getDB());
+
     query.exec("SELECT name FROM builds");
     while (query.next()) {
         QTreeWidgetItem *buildItem = new QTreeWidgetItem;
@@ -155,44 +157,50 @@ void PC_Constructor::setTabWidgetBuilds()
 {
     QWidget *tempTabWidget = new QWidget(this);
     QHBoxLayout *tabHBoxLayout = new QHBoxLayout(tempTabWidget);
+    QSqlQuery query(db->getDB());
 
     query.exec(QString("SELECT id FROM builds WHERE name LIKE '%1'").arg(activeBuildName));
     query.next();
 
     ComponentsWidget *componentsWidget = new ComponentsWidget(query.value(0).toInt());
-    tabHBoxLayout->addWidget(componentsWidget, QSizePolicy::Ignored);
     connect(componentsWidget,
-            &ComponentsWidget::componentConflict,
+            &ComponentsWidget::conflictResult,
             this,
-            [this](QStringList componentTypes) {
+            [this](QStringList conflictList) {
                 static int conflictCount = 0;
 
-                if (componentTypes.empty()) {
+                if (conflictList.empty()) {
                     db->runScript(QString("UPDATE builds SET conflict = NULL WHERE name LIKE '%1'")
                                       .arg(activeBuildName));
+
                     conflictCount = 0;
                 } else {
-                    QString tempMessage = ui->statusbar->currentMessage();
+                    QString currentMessage = ui->statusbar->currentMessage();
+                    QString tempMessage;
 
-                    if (!conflictCount)
-                        tempMessage = "Конфлікт: ";
-
-                    for (int i = 0; i < componentTypes.size(); i++)
+                    for (int i = 0; i < conflictList.size(); i++)
                         tempMessage.append(
-                            SingleComponentWidget::translateComponentToText(componentTypes[i])
-                            + (i + 1 != componentTypes.size() ? " - " : ""));
-
+                            SingleComponentWidget::translateComponentToText(conflictList[i])
+                            + (i + 1 != conflictList.size() ? " - " : ""));
                     tempMessage.append("; ");
 
+                    if (!currentMessage.contains(tempMessage))
+                        currentMessage.append(tempMessage);
+
+                    if (!conflictCount)
+                        currentMessage.prepend("Конфлікт: ");
+
                     db->runScript(QString("UPDATE builds SET conflict = '%1' WHERE name LIKE '%2'")
-                                      .arg(tempMessage, activeBuildName));
+                                      .arg(currentMessage, activeBuildName));
 
                     conflictCount++;
                 }
                 setStatusBar();
             });
-    componentsWidget->emitSignalAfterRestore();
 
+    componentsWidget->createWidget();
+
+    tabHBoxLayout->addWidget(componentsWidget, QSizePolicy::Ignored);
     tabHBoxLayout->addWidget(new SpecificationsWidget, QSizePolicy::Expanding);
     ui->tabWidget->addTab(tempTabWidget, activeBuildName);
     ui->tabWidget->setCurrentIndex(ui->tabWidget->count() - 1);
@@ -200,6 +208,7 @@ void PC_Constructor::setTabWidgetBuilds()
 
 void PC_Constructor::setStatusBar()
 {
+    QSqlQuery query(db->getDB());
     query.exec(QString("SELECT conflict FROM builds WHERE name LIKE '%1'").arg(activeBuildName));
 
     QString tempMessage;

@@ -1,7 +1,6 @@
 #ifndef SINGLECOMPONENTWIDGET_H
 #define SINGLECOMPONENTWIDGET_H
 
-#include <QSqlQuery>
 #include <QVector>
 #include <QWidget>
 #include "sqlitedbmanager.h"
@@ -21,10 +20,10 @@ public:
                                    QWidget *parent = nullptr);
     ~SingleComponentWidget();
 
+    void createWidget();
     void setComboBoxColor(bool value);
     static QString isComponentTypeSecond(QString componentType);
     static QString translateComponentToText(QString componentType);
-    void emitSignalAfterRestore();
 
 signals:
     void componentChoosed(QString componentType,
@@ -41,9 +40,9 @@ private:
     IDBManager *db;
 
     int buildId;
+    bool isRestored;
     int componentId;
     QString componentType;
-    QSqlQuery query;
 
     int findIdByName(QString componentType, QString componentName);
 };
