@@ -1,6 +1,7 @@
 #include "componentsmanager.h"
 #include <QDir>
 #include <QFileDialog>
+#include <QMessageBox>
 #include "ui_componentsmanager.h"
 
 ComponentsManager::ComponentsManager(QWidget *parent)
@@ -199,7 +200,14 @@ void ComponentsManager::on_addComponentButton_clicked()
 
 void ComponentsManager::on_deleteComponentButton_clicked()
 {
-    model->removeRow(activeRow);
+    if (QMessageBox::warning(this,
+                             "Попередження",
+                             QString("Ви точно хочете видалити компонент %1?")
+                                 .arg(model->index(activeRow, 1).data().toString()),
+                             QMessageBox::Ok | QMessageBox::Cancel)
+            != QMessageBox::Ok
+        || !model->removeRow(activeRow))
+        return;
 
     ui->deleteComponentButton->setEnabled(false);
     ui->photoComponentButton->setEnabled(false);
