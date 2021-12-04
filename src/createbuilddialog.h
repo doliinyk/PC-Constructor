@@ -7,6 +7,7 @@ namespace Ui {
 class CreateBuildDialog;
 }
 
+//  Клас-діалогове вікно, яке запитує ім'я для створення збірки
 class CreateBuildDialog : public QDialog
 {
     Q_OBJECT
@@ -20,6 +21,8 @@ signals:
 
 private slots:
     void on_buttonBox_accepted();
+    void on_buttonBox_rejected();
+    void on_CreateBuildDialog_finished(int result);
 
 private:
     Ui::CreateBuildDialog *ui;

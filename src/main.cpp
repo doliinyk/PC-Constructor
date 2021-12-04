@@ -5,6 +5,8 @@ int main(int argc, char *argv[])
 {
     QApplication application(argc, argv);
     PC_Constructor mainWindow;
+
     mainWindow.show();
+
     return application.exec();
 }

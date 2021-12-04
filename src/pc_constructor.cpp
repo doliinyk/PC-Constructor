@@ -26,9 +26,7 @@ PC_Constructor::PC_Constructor(QWidget *parent)
                   "gpu INTEGER, "
                   "gpu2 INTEGER, "
                   "powerSupply INTEGER, "
-                  "power INTEGER, "
-                  "conflict VARCHAR, "
-                  "price INTEGER, "
+                  "conflict INTEGER DEFAULT 0, "
                   "UNIQUE(name)"
                   ")");
 
@@ -44,11 +42,6 @@ PC_Constructor::~PC_Constructor()
 {
     delete db;
     delete ui;
-}
-
-void PC_Constructor::on_action_NewBuild_triggered()
-{
-    createBuildDialog.exec();
 }
 
 void PC_Constructor::createBuild(QString buildName)
@@ -68,6 +61,11 @@ void PC_Constructor::createBuild(QString buildName)
     setStatusBar();
 }
 
+void PC_Constructor::on_action_NewBuild_triggered()
+{
+    createBuildDialog.exec();
+}
+
 void PC_Constructor::on_actionDeleteBuild_triggered()
 {
     if (QMessageBox::warning(this,
@@ -80,7 +78,7 @@ void PC_Constructor::on_actionDeleteBuild_triggered()
 
     activeBuildName.clear();
     ui->treeWidget->clear();
-    ui->tabWidget->removeTab(ui->tabWidget->currentIndex());
+    on_tabWidget_tabCloseRequested(ui->tabWidget->currentIndex());
 
     setBuildMenuBar();
     setTreeWidgetBuilds();
@@ -94,7 +92,17 @@ void PC_Constructor::on_tabWidget_tabBarClicked(int index)
 
     activeBuildName = ui->tabWidget->tabText(index);
 
+    setBuildMenuBar();
     setStatusBar();
+}
+
+void PC_Constructor::on_tabWidget_tabCloseRequested(int index)
+{
+    ui->tabWidget->removeTab(index);
+
+    activeBuildName.clear();
+    activeBuildName = ui->tabWidget->tabText(ui->tabWidget->currentIndex());
+
     setBuildMenuBar();
     setStatusBar();
 }
@@ -144,7 +152,7 @@ void PC_Constructor::setTreeWidgetBuilds()
 {
     QSqlQuery query(db->getDB());
 
-    query.exec("SELECT name FROM builds");
+    query.exec("SELECT name FROM builds ORDER BY id ASC");
     while (query.next()) {
         QTreeWidgetItem *buildItem = new QTreeWidgetItem;
         buildItem->setText(0, query.value(0).toString());
@@ -153,86 +161,98 @@ void PC_Constructor::setTreeWidgetBuilds()
     }
 }
 
-void PC_Constructor::setTabWidgetBuilds()
+void PC_Constructor::setTabWidgetBuilds(QString componentType, int componentId)
 {
-    QWidget *tempTabWidget = new QWidget(this);
-    QHBoxLayout *tabHBoxLayout = new QHBoxLayout(tempTabWidget);
     QSqlQuery query(db->getDB());
 
     query.exec(QString("SELECT id FROM builds WHERE name LIKE '%1'").arg(activeBuildName));
     query.next();
 
+    QWidget *tempTabWidget = new QWidget(this);
+    QHBoxLayout *tabHBoxLayout = new QHBoxLayout(tempTabWidget);
     ComponentsWidget *componentsWidget = new ComponentsWidget(query.value(0).toInt());
+
     connect(componentsWidget,
-            &ComponentsWidget::conflictResult,
+            &ComponentsWidget::clearWidget,
             this,
-            [this](QStringList conflictList) {
-                static int conflictCount = 0;
+            [this, tempTabWidget](QString componentType, int componentId) {
+                ui->tabWidget->removeTab(ui->tabWidget->currentIndex());
+                tempTabWidget->deleteLater();
 
-                if (conflictList.empty()) {
-                    db->runScript(QString("UPDATE builds SET conflict = NULL WHERE name LIKE '%1'")
-                                      .arg(activeBuildName));
-
-                    conflictCount = 0;
-                } else {
-                    QString currentMessage = ui->statusbar->currentMessage();
-                    QString tempMessage;
-
-                    for (int i = 0; i < conflictList.size(); i++)
-                        tempMessage.append(
-                            SingleComponentWidget::translateComponentToText(conflictList[i])
-                            + (i + 1 != conflictList.size() ? " - " : ""));
-                    tempMessage.append("; ");
-
-                    if (!currentMessage.contains(tempMessage))
-                        currentMessage.append(tempMessage);
-
-                    if (!conflictCount)
-                        currentMessage.prepend("Конфлікт: ");
-
-                    db->runScript(QString("UPDATE builds SET conflict = '%1' WHERE name LIKE '%2'")
-                                      .arg(currentMessage, activeBuildName));
-
-                    conflictCount++;
-                }
+                setTabWidgetBuilds(componentType, componentId);
                 setStatusBar();
             });
+    connect(componentsWidget,
+            &ComponentsWidget::lastComponentCreated,
+            this,
+            &PC_Constructor::setStatusBar);
 
     componentsWidget->createWidget();
 
     tabHBoxLayout->addWidget(componentsWidget, QSizePolicy::Ignored);
-    tabHBoxLayout->addWidget(new SpecificationsWidget, QSizePolicy::Expanding);
+    tabHBoxLayout->addWidget(new SpecificationsWidget(componentType, componentId),
+                             QSizePolicy::Expanding);
     ui->tabWidget->addTab(tempTabWidget, activeBuildName);
     ui->tabWidget->setCurrentIndex(ui->tabWidget->count() - 1);
 }
 
 void PC_Constructor::setStatusBar()
 {
-    QSqlQuery query(db->getDB());
-    query.exec(QString("SELECT conflict FROM builds WHERE name LIKE '%1'").arg(activeBuildName));
-
-    QString tempMessage;
-    if (query.next())
-        tempMessage = query.value(0).toString();
-
-    if (tempMessage.isEmpty() || activeBuildName.isEmpty()) {
-        ui->statusbar->setStyleSheet("background-color: white;"
-                                     "color: black");
+    if (activeBuildName.isEmpty()) {
         ui->statusbar->clearMessage();
-    } else {
-        ui->statusbar->setStyleSheet("background-color: rgb(75, 0, 0);"
-                                     "color: white");
-        ui->statusbar->showMessage(tempMessage);
+        return;
     }
-}
 
-void PC_Constructor::on_tabWidget_tabCloseRequested(int index)
-{
-    activeBuildName.clear();
+    QSqlQuery query(db->getDB());
 
-    ui->tabWidget->removeTab(index);
+    int tempPrice = 0;
+    int tempPower = 0;
 
-    activeBuildName = ui->tabWidget->tabText(ui->tabWidget->currentIndex());
-    setBuildMenuBar();
-    setStatusBar();
+    QStringList tempComponentsList({"cpu", "ram", "gpu", "gpu"});
+    QVector<int> ids(4);
+
+    query.exec(
+        QString("SELECT cpu, ram, gpu, gpu2 FROM builds WHERE name LIKE '%1'").arg(activeBuildName));
+    query.next();
+    for (int i = 0; i < 4; i++)
+        ids[i] = query.value(i).toInt();
+    for (int i = 0; i < 4; i++) {
+        query.exec(
+            QString("SELECT power FROM %1 WHERE id = %2").arg(tempComponentsList[i]).arg(ids[i]));
+        if (query.next())
+            tempPower += query.value(0).toInt();
+    }
+
+    tempComponentsList = {"motherboard", "cpu", "ram", "rom", "rom", "gpu", "gpu", "powerSupply"};
+    ids.clear();
+    ids.resize(8);
+
+    query.exec(QString("SELECT conflict FROM builds WHERE name LIKE '%1'").arg(activeBuildName));
+    query.next();
+    bool tempConflict = query.value(0).toBool();
+
+    query.exec(QString("SELECT * FROM builds WHERE name LIKE '%1'").arg(activeBuildName));
+    query.next();
+    for (int i = 2; i < 10; i++)
+        ids[i - 2] = query.value(i).toInt();
+    if (!ids.contains(0))
+        tempPower += 20;
+    else
+        tempConflict = true;
+    for (int i = 0; i < 8; i++) {
+        query.exec(
+            QString("SELECT price FROM %1 WHERE id = %2").arg(tempComponentsList[i]).arg(ids[i]));
+        if (query.next())
+            tempPrice += query.value(0).toInt();
+    }
+
+    ui->statusbar->showMessage(QString("Характеристики збірки %1:"
+                                       "        Ціна: %2 грн"
+                                       "        Споживання: %3 Вт"
+                                       "        Стан збірки: %4")
+                                   .arg(activeBuildName)
+                                   .arg(tempPrice)
+                                   .arg(tempPower)
+                                   .arg(tempConflict ? "Наявні конфлікти/Не вистачає компонентів"
+                                                     : "Конфліктів немає. ПК зібрано"));
 }

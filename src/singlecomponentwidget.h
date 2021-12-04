@@ -9,6 +9,8 @@ namespace Ui {
 class SingleComponentWidget;
 }
 
+//  Клас-віджет, який графічно представляє один взятий компонент збірки
+//  дозволяє його змінювати, реагує на несумісність компонентів
 class SingleComponentWidget : public QWidget
 {
     Q_OBJECT
@@ -26,10 +28,11 @@ public:
     static QString translateComponentToText(QString componentType);
 
 signals:
-    void componentChoosed(QString componentType,
+    void componentCreated(QString componentType,
                           int componentId,
                           SingleComponentWidget *singleComponentWidget);
-    void componentDeleted(QString componentType);
+    void componentChanged(QString componentType, int componentId = 0, bool isDeleted = true);
+    void specificationsRequest(QString componentType, int componentId);
 
 private slots:
     void on_componentBox_activated(int index);

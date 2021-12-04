@@ -3,6 +3,7 @@
 
 #include <QSqlDatabase>
 
+//  Інтерфейс менеджера бази даних
 class IDBManager
 {
 public:

@@ -3,6 +3,8 @@
 
 #include "idbmanager.h"
 
+//  Реалізація інтерфейсу менеджера бази даних
+//  Менеджер бази даних SQLite
 class SQLiteDBManager : public IDBManager
 {
 public:
@@ -14,10 +16,10 @@ public:
     virtual bool runScript(QString script) override;
 
 private:
+    SQLiteDBManager();
+
     QSqlDatabase db;
     static SQLiteDBManager *instance;
-
-    SQLiteDBManager();
 
     bool openDB(QString dbName);
 };

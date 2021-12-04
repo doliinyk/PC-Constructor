@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Менеджер компонентів</string>
+   <string>PC Constructor [Менеджер компонентів]</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" stretch="0">
    <property name="leftMargin">
@@ -103,6 +103,22 @@
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QPushButton" name="photoComponentButton">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="font">
+          <font>
+           <family>Roboto</family>
+           <pointsize>11</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Додати фотографію</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </item>
      <item row="0" column="0" rowspan="3">
@@ -160,7 +176,7 @@
        </item>
        <item>
         <property name="text">
-         <string>Оперативна пам`ять</string>
+         <string>Оперативна пам'ять</string>
         </property>
        </item>
        <item>

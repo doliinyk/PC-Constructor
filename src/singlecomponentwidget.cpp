@@ -27,7 +27,8 @@ void SingleComponentWidget::createWidget()
     QSqlQuery query(db->getDB());
     ui->label->setText(translateComponentToText(componentType));
 
-    query.exec(QString("SELECT name FROM %1").arg(isComponentTypeSecond(componentType)));
+    query.exec(
+        QString("SELECT name FROM %1 ORDER BY id ASC").arg(isComponentTypeSecond(componentType)));
     while (query.next())
         ui->componentBox->addItem(query.value(0).toString());
 
@@ -35,16 +36,29 @@ void SingleComponentWidget::createWidget()
         query.exec(QString("SELECT %1 FROM builds WHERE id = %2").arg(componentType).arg(buildId));
         query.next();
 
-        componentId = query.value(0).toInt();
         ui->componentBox->setCurrentIndex(query.value(0).toInt() - 1);
+    } else {
+        query.exec(QString("SELECT id FROM %1 WHERE name LIKE '%2'")
+                       .arg(isComponentTypeSecond(componentType), ui->componentBox->itemText(0)));
+        query.next();
+
+        db->runScript(QString("UPDATE builds SET %1 = %2 WHERE id = %3")
+                          .arg(componentType)
+                          .arg(query.value(0).toInt())
+                          .arg(buildId));
     }
 
-    emit componentChoosed(componentType, componentId, this);
+    componentId = query.value(0).toInt();
+
+    emit componentCreated(componentType, componentId, this);
 }
 
 void SingleComponentWidget::setComboBoxColor(bool value)
 {
-    ui->componentBox->setStyleSheet(QString("color: %1").arg(value ? "black" : "darkred"));
+    QString tempStyleSheetColor = (QString("color: %1").arg(value ? "black" : "darkred"));
+
+    ui->componentBox->setStyleSheet(tempStyleSheetColor);
+    ui->label->setStyleSheet(tempStyleSheetColor);
 }
 
 QString SingleComponentWidget::isComponentTypeSecond(QString componentType)
@@ -60,7 +74,7 @@ QString SingleComponentWidget::translateComponentToText(QString componentType)
     if (componentType == "cpu")
         return "Процесор";
     if (componentType == "ram")
-        return "Оперативна пам`ять";
+        return "Оперативна пам'ять";
     if (componentType.startsWith("rom"))
         return "Накопичувач";
     if (componentType.startsWith("gpu"))
@@ -72,20 +86,25 @@ QString SingleComponentWidget::translateComponentToText(QString componentType)
 
 void SingleComponentWidget::on_componentBox_activated(int index)
 {
-    QSqlQuery query(db->getDB());
-    componentId = findIdByName(componentType, ui->componentBox->itemText(index));
+    int tempComponentId = findIdByName(componentType, ui->componentBox->itemText(index));
 
-    query.exec(QString("UPDATE builds SET %1 = %2 WHERE id = %3")
-                   .arg(componentType)
-                   .arg(componentId)
-                   .arg(buildId));
+    if (tempComponentId == componentId) {
+        emit specificationsRequest(componentType, componentId);
+        return;
+    }
 
-    emit componentChoosed(componentType, componentId, this);
+    componentId = tempComponentId;
+    db->runScript(QString("UPDATE builds SET %1 = %2 WHERE id = %3")
+                      .arg(componentType)
+                      .arg(componentId)
+                      .arg(buildId));
+
+    emit componentChanged(componentType, componentId, false);
 }
 
 void SingleComponentWidget::on_deleteButton_clicked()
 {
-    emit componentDeleted(componentType);
+    emit componentChanged(componentType);
 }
 
 int SingleComponentWidget::findIdByName(QString componentType, QString componentName)

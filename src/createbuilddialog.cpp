@@ -7,7 +7,6 @@ CreateBuildDialog::CreateBuildDialog(QWidget *parent) :
 {
     ui->setupUi(this);
     setModal(true);
-    setFixedSize(QSize(450, 80));
 }
 
 CreateBuildDialog::~CreateBuildDialog()
@@ -18,5 +17,16 @@ CreateBuildDialog::~CreateBuildDialog()
 void CreateBuildDialog::on_buttonBox_accepted()
 {
     emit getBuildName(ui->lineEdit->text());
-    ui->lineEdit->setText("");
+    ui->lineEdit->clear();
+}
+
+void CreateBuildDialog::on_buttonBox_rejected()
+{
+    ui->lineEdit->clear();
+}
+
+void CreateBuildDialog::on_CreateBuildDialog_finished(int result)
+{
+    if (!result)
+        ui->lineEdit->clear();
 }

@@ -1,4 +1,5 @@
 #include "componentswidget.h"
+#include <QMessageBox>
 #include <QSqlQuery>
 #include "ui_componentswidget.h"
 
@@ -8,6 +9,7 @@ ComponentsWidget::ComponentsWidget(int buildId, QWidget *parent)
     , db(SQLiteDBManager::getInstance())
     , componentTypeList({"motherboard", "cpu", "ram", "rom", "rom2", "gpu", "gpu2", "powerSupply"})
     , buildId(buildId)
+    , isConflict(false)
     , isRestored(false)
 {
     ui->setupUi(this);
@@ -24,63 +26,75 @@ void ComponentsWidget::createWidget()
     query.exec(QString("SELECT * FROM builds WHERE id = %1").arg(buildId));
     query.next();
 
-    for (int i = 2, deletedCount = 0; i <= 9; i++) {
-        if (!query.value(i).toInt())
-            continue;
+    for (int i = 2, deletedCount = 0; i <= 9; i++)
+        if (query.value(i).toInt()) {
+            createComponent(i - 2 - deletedCount, true);
 
-        createComponent(i - 2 - deletedCount, true);
-
-        deletedCount++;
-    }
-}
-
-void ComponentsWidget::on_addComponentButton_clicked()
-{
-    createComponent();
+            deletedCount++;
+        }
 }
 
 void ComponentsWidget::createComponent(int index, bool isRestored)
 {
-    this->isRestored = isRestored;
-
-    if (componentTypeList.empty())
+    if (printError())
         return;
+
+    this->isRestored = isRestored;
 
     SingleComponentWidget *singleComponentWidget
         = new SingleComponentWidget(componentTypeList[index], buildId, isRestored);
     connect(singleComponentWidget,
-            &SingleComponentWidget::componentChoosed,
+            &SingleComponentWidget::componentCreated,
             this,
-            &ComponentsWidget::checkCompatibility);
+            [this](QString componentType,
+                   int componentId,
+                   SingleComponentWidget *singleComponentWidget) {
+                checkCompatibility(componentType, componentId, singleComponentWidget);
+
+                if (componentType == "powerSupply")
+                    emit lastComponentCreated();
+            });
     connect(singleComponentWidget,
-            &SingleComponentWidget::componentDeleted,
+            &SingleComponentWidget::componentChanged,
             this,
-            [this, singleComponentWidget](QString componentName) {
-                if (ui->frame->isHidden())
-                    ui->frame->show();
-
-                db->runScript(QString("UPDATE builds SET %1 = NULL WHERE id = %2")
-                                  .arg(componentName)
-                                  .arg(buildId));
-
-                componentTypeList.push_back(componentName);
-
-                for (int i = 0; i < conflictList.size(); i++)
-                    if (componentName == conflictList[i])
-                        conflictList.erase(conflictList.constBegin() + i);
-
-                emit conflictResult(conflictList);
-
-                delete singleComponentWidget;
+            &ComponentsWidget::on_singleComponentChanged);
+    connect(singleComponentWidget,
+            &SingleComponentWidget::specificationsRequest,
+            this,
+            [this](QString componentType, int componentId) {
+                emit clearWidget(SingleComponentWidget::isComponentTypeSecond(componentType),
+                                 componentId);
             });
 
     singleComponentWidget->createWidget();
 
     ui->gridLayout->addWidget(singleComponentWidget);
 
-    componentTypeList.erase(componentTypeList.constBegin() + index);
+    componentTypeList.removeFirst();
     if (componentTypeList.empty())
         ui->frame->hide();
+}
+
+void ComponentsWidget::on_singleComponentChanged(QString componentType,
+                                                 int componentId,
+                                                 bool isDeleted)
+{
+    const QStringList tempComponentList(
+        {"motherboard", "cpu", "ram", "rom", "rom2", "gpu", "gpu2", "powerSupply"});
+
+    for (int i = 0; i < tempComponentList.size() - tempComponentList.indexOf(componentType)
+                            - (isDeleted ? 0 : 1);
+         i++)
+        db->runScript(QString("UPDATE builds SET %1 = NULL WHERE id = %2")
+                          .arg(*(tempComponentList.crbegin() + i))
+                          .arg(buildId));
+
+    emit clearWidget(SingleComponentWidget::isComponentTypeSecond(componentType), componentId);
+}
+
+void ComponentsWidget::on_addComponentButton_clicked()
+{
+    createComponent();
 }
 
 void ComponentsWidget::checkCompatibility(QString componentType,
@@ -93,14 +107,56 @@ void ComponentsWidget::checkCompatibility(QString componentType,
     if (componentType == "motherboard")
         result = true;
     else if (componentType == "cpu")
-        result = compatibilityQuery(componentType, "socket", componentId);
+        result = motherboardCompatibilityQuery(componentType, "socket", componentId);
     else if (componentType == "ram")
-        result = compatibilityQuery(componentType, "ramType", componentId);
-    else if (componentType.startsWith("rom"))
-        result = compatibilityQuery(componentType, "romInterface", componentId);
-    else if (componentType.startsWith("gpu"))
-        result = true;
-    else if (componentType == "powerSupply") {
+        result = motherboardCompatibilityQuery(componentType, "ramType", componentId);
+    else if (componentType == "rom")
+        result = motherboardCompatibilityQuery(componentType, "romInterface", componentId);
+    else if (componentType == "rom2") {
+        QSqlQuery query(db->getDB());
+
+        query.exec(QString("SELECT rom2 FROM builds WHERE id = %1").arg(buildId));
+        query.next();
+
+        query.exec(QString("SELECT storage FROM rom WHERE id = %1").arg(query.value(0).toInt()));
+        query.next();
+
+        if (!query.value(0).toBool())
+            result = true;
+        else
+            result = motherboardCompatibilityQuery(componentType, "romInterface", componentId);
+    } else if (componentType.startsWith("gpu")) {
+        QSqlQuery query(db->getDB());
+
+        query.exec(QString("SELECT cpu FROM builds WHERE id = %1").arg(buildId));
+        query.next();
+
+        query.exec(QString("SELECT graphics FROM cpu WHERE id = %1").arg(query.value(0).toInt()));
+        query.next();
+
+        if (!query.value(0).toInt()) {
+            if (componentType == "gpu") {
+                query.exec(QString("SELECT storage FROM gpu WHERE id = %1").arg(componentId));
+                query.next();
+
+                result = query.value(0).toBool();
+            } else if (componentType == "gpu2") {
+                query.exec(QString("SELECT gpu FROM builds WHERE id = %1").arg(buildId));
+                query.next();
+
+                query.exec(
+                    QString("SELECT storage FROM gpu WHERE id = %1").arg(query.value(0).toInt()));
+                query.next();
+                bool tempGPU2Exists = query.value(0).toBool();
+
+                query.exec(QString("SELECT storage FROM gpu WHERE id = %1").arg(componentId));
+                query.next();
+
+                result = (tempGPU2Exists || query.value(0).toBool());
+            }
+        } else
+            result = true;
+    } else if (componentType == "powerSupply") {
         int generalPower = 20;
         QSqlQuery query(db->getDB());
 
@@ -130,29 +186,25 @@ void ComponentsWidget::checkCompatibility(QString componentType,
 
     singleComponentWidget->setComboBoxColor(result);
 
-    conflictList.clear();
-    if (!result) {
-        if (componentType == "cpu" || componentType == "ram" || componentType == "rom") {
-            conflictList.push_back("motherboard");
-            conflictList.push_back(componentType);
-        } else if (componentType == "powerSupply") {
-            conflictList.push_back(componentType);
-            for (int i = 0; i < 4; i++) {
-                if (!idList[i])
-                    conflictList.push_back((
-                        !i ? "cpu" : (i == 1 ? "ram" : (i == 2 ? "gpu" : (i == 3 ? "gpu2" : "")))));
-            }
-        }
-    }
+    isConflict = !result;
 
-    emit conflictResult(conflictList);
+    db->runScript(
+        QString("UPDATE builds SET conflict = %1 WHERE id = %2").arg(isConflict).arg(buildId));
+
+    if (isConflict) {
+        componentConflictType = componentType;
+
+        if (componentConflictType == "powerSupply")
+            printError();
+    }
 }
 
-bool ComponentsWidget::compatibilityQuery(QString componentType,
-                                          QString compareField,
-                                          int componentId)
+bool ComponentsWidget::motherboardCompatibilityQuery(QString componentType,
+                                                     QString compareField,
+                                                     int componentId)
 {
     QSqlQuery query(db->getDB());
+
     query.exec(QString("SELECT motherboard FROM builds WHERE id = %1").arg(buildId));
     query.next();
     int motherboardIndex = query.value(0).toInt();
@@ -162,9 +214,38 @@ bool ComponentsWidget::compatibilityQuery(QString componentType,
     query.next();
     QString compareResult = query.value(0).toString();
 
-    query.exec(
-        QString("SELECT %1 FROM %2 WHERE id = %3").arg(compareField, componentType).arg(componentId));
+    query.exec(QString("SELECT %1 FROM %2 WHERE id = %3")
+                   .arg(compareField, SingleComponentWidget::isComponentTypeSecond(componentType))
+                   .arg(componentId));
     query.next();
 
-    return (query.value(0).toString() == compareResult);
+    if (componentType.startsWith("rom"))
+        return compareResult.contains(query.value(0).toString());
+
+    return query.value(0).toString() == compareResult;
+}
+
+bool ComponentsWidget::printError()
+{
+    if (!isConflict)
+        return false;
+
+    QMessageBox *a = new QMessageBox(
+        QMessageBox::Warning,
+        "Конфлікт",
+        QString("%1 не є сумісним з даною збіркою ПК за параметром: %2")
+            .arg(SingleComponentWidget::translateComponentToText(componentConflictType),
+                 componentConflictType == "cpu"
+                     ? "Сокет"
+                     : (componentConflictType == "ram"
+                            ? "Тип оперативної пам'яті"
+                            : (componentConflictType.startsWith("rom")
+                                   ? "Інтерфейс/наявність накопичувача"
+                                   : (componentConflictType.startsWith("gpu")
+                                          ? "Наявність графічного ядра"
+                                          : (componentConflictType == "powerSupply" ? "Потужність"
+                                                                                    : ""))))));
+    a->show();
+
+    return true;
 }
