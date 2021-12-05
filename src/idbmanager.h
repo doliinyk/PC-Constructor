@@ -8,7 +8,7 @@ class IDBManager
 {
 public:
     IDBManager();
-    virtual ~IDBManager();
+    virtual ~IDBManager() = 0;
 
     virtual QSqlDatabase getDB() = 0;
     virtual bool connectToDB(QString dbName) = 0;

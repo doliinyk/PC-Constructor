@@ -86,6 +86,11 @@ ComponentsManager::ComponentsManager(QWidget *parent)
                   "UNIQUE(name)"
                   ")");
 
+    connect(ui->treeWidget,
+            &QTreeWidget::itemActivated,
+            this,
+            &ComponentsManager::on_treeWidget_itemDoubleClicked);
+
     model = new QSqlTableModel(this, db->getDB());
 }
 

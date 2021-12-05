@@ -17,7 +17,7 @@ public:
     ~CreateBuildDialog();
 
 signals:
-    void getBuildName(QString);
+    void getBuildName(QString buildName);
 
 private slots:
     void on_buttonBox_accepted();

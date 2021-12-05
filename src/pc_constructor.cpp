@@ -1,4 +1,5 @@
 #include "pc_constructor.h"
+#include <QKeyEvent>
 #include <QMessageBox>
 #include <QSqlQuery>
 #include <QTableView>
@@ -34,6 +35,10 @@ PC_Constructor::PC_Constructor(QWidget *parent)
             &CreateBuildDialog::getBuildName,
             this,
             &PC_Constructor::createBuild);
+    connect(ui->treeWidget,
+            &QTreeWidget::itemActivated,
+            this,
+            &PC_Constructor::on_treeWidget_itemDoubleClicked);
 
     setTreeWidgetBuilds();
 }
@@ -47,8 +52,13 @@ PC_Constructor::~PC_Constructor()
 void PC_Constructor::createBuild(QString buildName)
 {
     if (buildName.isEmpty()
-        || !db->runScript(QString("INSERT INTO builds(name) VALUES('%1')").arg(buildName)))
+        || !db->runScript(QString("INSERT INTO builds(name) VALUES('%1')").arg(buildName))) {
+        QMessageBox::warning(this,
+                             "Помилка",
+                             QString("Збірку %1 не створено або збірка вже існує.").arg(buildName),
+                             QMessageBox::Ok);
         return;
+    }
 
     activeBuildName = buildName;
 
@@ -82,6 +92,27 @@ void PC_Constructor::on_actionDeleteBuild_triggered()
 
     setBuildMenuBar();
     setTreeWidgetBuilds();
+    setStatusBar();
+}
+
+void PC_Constructor::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Tab && event->modifiers() == Qt::ControlModifier) {
+        if (ui->tabWidget->currentIndex() + 1 == ui->tabWidget->count())
+            ui->tabWidget->setCurrentIndex(0);
+        else
+            ui->tabWidget->setCurrentIndex(ui->tabWidget->currentIndex() + 1);
+    } else if (event->key() == Qt::Key_Backtab) {
+        if (!ui->tabWidget->currentIndex())
+            ui->tabWidget->setCurrentIndex(ui->tabWidget->count() - 1);
+        else
+            ui->tabWidget->setCurrentIndex(ui->tabWidget->currentIndex() - 1);
+    } else
+        return;
+
+    activeBuildName = ui->tabWidget->tabText(ui->tabWidget->currentIndex());
+
+    setBuildMenuBar();
     setStatusBar();
 }
 

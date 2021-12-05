@@ -27,6 +27,7 @@ private slots:
     void createBuild(QString buildName);
     void on_action_NewBuild_triggered();
     void on_actionDeleteBuild_triggered();
+    void keyPressEvent(QKeyEvent *event);
     void on_tabWidget_tabBarClicked(int index);
     void on_tabWidget_tabCloseRequested(int index);
     void on_treeWidget_itemDoubleClicked(QTreeWidgetItem *build);
