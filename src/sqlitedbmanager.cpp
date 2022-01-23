@@ -11,7 +11,9 @@ SQLiteDBManager::~SQLiteDBManager() {}
 
 SQLiteDBManager *SQLiteDBManager::getInstance()
 {
-    return (instance ?: instance = new SQLiteDBManager);
+    if (!instance)
+        instance = new SQLiteDBManager();
+    return instance;
 }
 
 QSqlDatabase SQLiteDBManager::getDB()

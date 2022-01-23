@@ -1,6 +1,7 @@
 #include "componentswidget.h"
 #include <QMessageBox>
 #include <QSqlQuery>
+#include "discordrpc.h"
 #include "ui_componentswidget.h"
 
 ComponentsWidget::ComponentsWidget(int buildId, QWidget *parent)
@@ -88,6 +89,14 @@ void ComponentsWidget::on_singleComponentChanged(QString componentType,
         db->runScript(QString("UPDATE builds SET %1 = NULL WHERE id = %2")
                           .arg(*(tempComponentList.crbegin() + i))
                           .arg(buildId));
+
+    QSqlQuery query(db->getDB());
+    query.exec(QString("SELECT name FROM %1 WHERE id = %2")
+                   .arg(SingleComponentWidget::isComponentTypeSecond(componentType))
+                   .arg(componentId));
+    query.next();
+
+    g_DiscordRPC.Update(query.value(0).toString(), componentType);
 
     emit clearWidget(SingleComponentWidget::isComponentTypeSecond(componentType), componentId);
 }
