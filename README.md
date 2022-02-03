@@ -1,6 +1,6 @@
 # PC-Constructor
 GUI application, which allows and helps to build your own PC, choose specific components and calculate specifications
 <hr>
-(https://user-images.githubusercontent.com/68949838/152373786-642015d0-a59e-4d48-9c21-2aa5939ef6a5.png)
-(https://user-images.githubusercontent.com/68949838/152373851-c8aa6091-973f-4c2d-a1c1-8ce3dacc002b.png)
-(https://user-images.githubusercontent.com/68949838/152373896-3169fe0b-9181-44cc-8bc7-239ed3f18099.png)
+![image](https://user-images.githubusercontent.com/68949838/152374193-769b818b-890e-429e-abfe-6f5122329c5a.png)
+![image](https://user-images.githubusercontent.com/68949838/152374199-316bebe3-c609-4db7-8ab6-0f7e28396a6b.png)
+![image](https://user-images.githubusercontent.com/68949838/152374207-865173f4-7458-4c91-a417-dae6da202b58.png)
