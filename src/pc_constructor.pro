@@ -13,7 +13,6 @@ SOURCES += \
     componentsmanager.cpp \
     componentswidget.cpp \
     createbuilddialog.cpp \
-    discordrpc.cpp \
     idbmanager.cpp \
     main.cpp \
     pc_constructor.cpp \
@@ -25,7 +24,6 @@ HEADERS += \
     componentsmanager.h \
     componentswidget.h \
     createbuilddialog.h \
-    discordrpc.h \
     idbmanager.h \
     pc_constructor.h \
     singlecomponentwidget.h \
@@ -45,7 +43,4 @@ CONFIG(release, debug|release) {
 }
 
 RC_ICONS = pc_constructor_icon.ico
-
-INCLUDEPATH += $$PWD/../include
-LIBS += $$PWD/../lib/discord-rpc.lib
 

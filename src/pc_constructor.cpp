@@ -4,7 +4,6 @@
 #include <QSqlQuery>
 #include <QTableView>
 #include "componentswidget.h"
-#include "discordrpc.h"
 #include "singlecomponentwidget.h"
 #include "specificationswidget.h"
 #include "ui_pc_constructor.h"
@@ -15,7 +14,6 @@ PC_Constructor::PC_Constructor(QWidget *parent)
     , db(SQLiteDBManager::getInstance())
 {
     ui->setupUi(this);
-    g_DiscordRPC.Init();
 
     db->runScript("CREATE TABLE builds"
                   "("
@@ -47,8 +45,6 @@ PC_Constructor::PC_Constructor(QWidget *parent)
 
 PC_Constructor::~PC_Constructor()
 {
-    g_DiscordRPC.Deinit();
-
     delete db;
     delete ui;
 }
@@ -66,7 +62,7 @@ void PC_Constructor::createBuild(QString buildName)
 
     activeBuildName = buildName;
 
-    QTreeWidgetItem *buildItem = new QTreeWidgetItem;
+    QTreeWidgetItem *buildItem = new QTreeWidgetItem(ui->treeWidget);
     buildItem->setText(0, activeBuildName);
     ui->treeWidget->addTopLevelItem(buildItem);
 
@@ -181,9 +177,6 @@ void PC_Constructor::setBuildMenuBar()
         QString("Збірка%1")
             .arg(!activeBuildName.isEmpty() ? QString(" [%1]").arg(activeBuildName) : ""));
     ui->actionDeleteBuild->setEnabled(!activeBuildName.isEmpty());
-
-    g_DiscordRPC.Update(activeBuildName);
-    g_DiscordRPC.Update("", "");
 }
 
 void PC_Constructor::setTreeWidgetBuilds()
@@ -192,7 +185,7 @@ void PC_Constructor::setTreeWidgetBuilds()
 
     query.exec("SELECT name FROM builds ORDER BY id ASC");
     while (query.next()) {
-        QTreeWidgetItem *buildItem = new QTreeWidgetItem;
+        QTreeWidgetItem *buildItem = new QTreeWidgetItem(ui->treeWidget);
         buildItem->setText(0, query.value(0).toString());
         if (!buildItem->text(0).isEmpty())
             ui->treeWidget->addTopLevelItem(buildItem);
@@ -208,7 +201,7 @@ void PC_Constructor::setTabWidgetBuilds(QString componentType, int componentId)
 
     QWidget *tempTabWidget = new QWidget(this);
     QHBoxLayout *tabHBoxLayout = new QHBoxLayout(tempTabWidget);
-    ComponentsWidget *componentsWidget = new ComponentsWidget(query.value(0).toInt());
+    ComponentsWidget *componentsWidget = new ComponentsWidget(query.value(0).toInt(), tempTabWidget);
 
     connect(componentsWidget,
             &ComponentsWidget::clearWidget,

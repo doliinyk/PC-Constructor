@@ -1,7 +1,6 @@
 #include "componentswidget.h"
 #include <QMessageBox>
 #include <QSqlQuery>
-#include "discordrpc.h"
 #include "ui_componentswidget.h"
 
 ComponentsWidget::ComponentsWidget(int buildId, QWidget *parent)
@@ -43,7 +42,7 @@ void ComponentsWidget::createComponent(int index, bool isRestored)
     this->isRestored = isRestored;
 
     SingleComponentWidget *singleComponentWidget
-        = new SingleComponentWidget(componentTypeList[index], buildId, isRestored);
+        = new SingleComponentWidget(componentTypeList[index], buildId, isRestored, this);
     connect(singleComponentWidget,
             &SingleComponentWidget::componentCreated,
             this,
@@ -95,8 +94,6 @@ void ComponentsWidget::on_singleComponentChanged(QString componentType,
                    .arg(SingleComponentWidget::isComponentTypeSecond(componentType))
                    .arg(componentId));
     query.next();
-
-    g_DiscordRPC.Update(query.value(0).toString(), componentType);
 
     emit clearWidget(SingleComponentWidget::isComponentTypeSecond(componentType), componentId);
 }
@@ -253,7 +250,9 @@ bool ComponentsWidget::printError()
                                    : (componentConflictType.startsWith("gpu")
                                           ? "Наявність графічного ядра"
                                           : (componentConflictType == "powerSupply" ? "Потужність"
-                                                                                    : ""))))));
+                                                                                    : ""))))),
+        QMessageBox::Ok,
+        this);
     a->show();
 
     return true;
